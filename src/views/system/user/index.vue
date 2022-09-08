@@ -215,7 +215,8 @@
                             <el-tooltip v-if="scope.row.userId !== 1" content="修改" placement="top">
                                 <el-button
                                     v-hasPermi="['system:user:edit']"
-                                    type="text"
+                                    link
+                                    type="primary"
                                     icon="Edit"
                                     @click="handleUpdate(scope.row)"
                                 ></el-button>
@@ -223,7 +224,8 @@
                             <el-tooltip v-if="scope.row.userId !== 1" content="删除" placement="top">
                                 <el-button
                                     v-hasPermi="['system:user:remove']"
-                                    type="text"
+                                    link
+                                    type="primary"
                                     icon="Delete"
                                     @click="handleDelete(scope.row)"
                                 ></el-button>
@@ -231,7 +233,8 @@
                             <el-tooltip v-if="scope.row.userId !== 1" content="重置密码" placement="top">
                                 <el-button
                                     v-hasPermi="['system:user:resetPwd']"
-                                    type="text"
+                                    link
+                                    type="primary"
                                     icon="Key"
                                     @click="handleResetPwd(scope.row)"
                                 ></el-button>
@@ -239,7 +242,8 @@
                             <el-tooltip v-if="scope.row.userId !== 1" content="分配角色" placement="top">
                                 <el-button
                                     v-hasPermi="['system:user:edit']"
-                                    type="text"
+                                    link
+                                    type="primary"
                                     icon="CircleCheck"
                                     @click="handleAuthRole(scope.row)"
                                 ></el-button>

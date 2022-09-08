@@ -99,14 +99,16 @@
                 <template #default="scope">
                     <el-button
                         v-hasPermi="['system:post:edit']"
-                        type="text"
+                        link
+                        type="primary"
                         icon="Edit"
                         @click="handleUpdate(scope.row)"
                         >修改</el-button
                     >
                     <el-button
                         v-hasPermi="['system:post:remove']"
-                        type="text"
+                        link
+                        type="primary"
                         icon="Delete"
                         @click="handleDelete(scope.row)"
                         >删除</el-button

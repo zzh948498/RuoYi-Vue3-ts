@@ -73,7 +73,8 @@
                 <template #default="scope">
                     <el-button
                         v-hasPermi="['system:role:remove']"
-                        type="text"
+                        link
+                        type="primary"
                         icon="CircleClose"
                         @click="cancelAuthUser(scope.row)"
                         >取消授权</el-button

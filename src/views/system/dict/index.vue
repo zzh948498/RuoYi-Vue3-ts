@@ -127,14 +127,16 @@
                 <template #default="scope">
                     <el-button
                         v-hasPermi="['system:dict:edit']"
-                        type="text"
+                        link
+                        type="primary"
                         icon="Edit"
                         @click="handleUpdate(scope.row)"
                         >修改</el-button
                     >
                     <el-button
                         v-hasPermi="['system:dict:remove']"
-                        type="text"
+                        link
+                        type="primary"
                         icon="Delete"
                         @click="handleDelete(scope.row)"
                         >删除</el-button

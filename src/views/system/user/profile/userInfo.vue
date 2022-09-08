@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-mutating-props -->
 <template>
     <el-form ref="userRef" :model="user" :rules="rules" label-width="80px">
         <el-form-item label="用户昵称" prop="nickName">
@@ -24,12 +25,11 @@
 
 <script setup lang="ts">
 import { updateUserProfile } from '@/api/system/user';
-import user from '@/store/modules/user';
 import { getCurrentInstance, ComponentInternalInstance, ref } from 'vue';
 
 const props = defineProps({
     user: {
-        type: Object,
+        type: Object as () => any,
     },
 });
 

@@ -53,7 +53,8 @@
                 <template #default="scope">
                     <el-button
                         v-hasPermi="['monitor:online:forceLogout']"
-                        type="text"
+                        link
+                        type="primary"
                         icon="Delete"
                         @click="handleForceLogout(scope.row)"
                         >强退</el-button

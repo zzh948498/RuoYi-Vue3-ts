@@ -149,7 +149,8 @@
                 <template #default="scope">
                     <el-button
                         v-hasPermi="['monitor:operlog:query']"
-                        type="text"
+                        link
+                        type="primary"
                         icon="View"
                         @click="handleView(scope.row, scope.index)"
                         >详细</el-button

@@ -127,7 +127,8 @@
                     <el-tooltip content="修改" placement="top">
                         <el-button
                             v-hasPermi="['monitor:job:edit']"
-                            type="text"
+                            link
+                            type="primary"
                             icon="Edit"
                             @click="handleUpdate(scope.row)"
                         ></el-button>
@@ -135,7 +136,8 @@
                     <el-tooltip content="删除" placement="top">
                         <el-button
                             v-hasPermi="['monitor:job:remove']"
-                            type="text"
+                            link
+                            type="primary"
                             icon="Delete"
                             @click="handleDelete(scope.row)"
                         ></el-button>
@@ -143,7 +145,8 @@
                     <el-tooltip content="执行一次" placement="top">
                         <el-button
                             v-hasPermi="['monitor:job:changeStatus']"
-                            type="text"
+                            link
+                            type="primary"
                             icon="CaretRight"
                             @click="handleRun(scope.row)"
                         ></el-button>
@@ -151,7 +154,8 @@
                     <el-tooltip content="任务详细" placement="top">
                         <el-button
                             v-hasPermi="['monitor:job:query']"
-                            type="text"
+                            link
+                            type="primary"
                             icon="View"
                             @click="handleView(scope.row)"
                         ></el-button>
@@ -159,7 +163,8 @@
                     <el-tooltip content="调度日志" placement="top">
                         <el-button
                             v-hasPermi="['monitor:job:query']"
-                            type="text"
+                            link
+                            type="primary"
                             icon="Operation"
                             @click="handleJobLog(scope.row)"
                         ></el-button>
