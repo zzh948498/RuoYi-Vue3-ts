@@ -6,6 +6,13 @@ import ElementPlus from 'element-plus';
 import locale from 'element-plus/lib/locale/lang/zh-cn'; // 中文语言
 
 import '@/assets/styles/index.scss'; // global css
+// element css
+import 'element-plus/es/components/message/style/css';
+import 'element-plus/es/components/message-box/style/css';
+import 'element-plus/es/components/notification/style/css';
+import 'element-plus/es/components/loading/style/css';
+// tailwindcss
+import './index.css';
 
 import App from './App.vue';
 import store from './store';
@@ -59,11 +66,7 @@ app.config.globalProperties.handleTree = handleTree;
 app.config.globalProperties.addDateRange = addDateRange;
 app.config.globalProperties.selectDictLabel = selectDictLabel;
 app.config.globalProperties.selectDictLabels = selectDictLabels;
-import 'element-plus/es/components/message/style/css';
-import 'element-plus/es/components/message-box/style/css';
-import 'element-plus/es/components/notification/style/css';
-import 'element-plus/es/components/loading/style/css';
-import './index.css';
+
 // 全局组件挂载
 app.component('DictTag', DictTag);
 app.component('Pagination', Pagination);
