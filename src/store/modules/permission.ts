@@ -1,9 +1,9 @@
 import auth from '@/plugins/auth';
 import router, { constantRoutes, dynamicRoutes } from '@/router';
 import { getRouters } from '@/api/menu';
-import Layout from '@/layout/index';
-import ParentView from '@/components/ParentView';
-import InnerLink from '@/layout/components/InnerLink';
+import Layout from '@/layout/index.vue';
+import ParentView from '@/components/ParentView/index.vue';
+import InnerLink from '@/layout/components/InnerLink/index.vue';
 import { defineStore } from 'pinia';
 import { RouteRecordRaw } from 'vue-router';
 
@@ -38,8 +38,8 @@ const usePermissionStore = defineStore('permission', {
         setSidebarRouters(routes: RouteRecordRaw[]) {
             this.sidebarRouters = routes;
         },
-        generateRoutes(routes: RouteRecordRaw[]) {
-            return new Promise(resolve => {
+        generateRoutes(routes?: RouteRecordRaw[]) {
+            return new Promise<any[]>(resolve => {
                 // 向后端请求路由数据
                 getRouters().then(res => {
                     const sdata = JSON.parse(JSON.stringify(res.data));
@@ -116,7 +116,7 @@ function filterChildren(childrenMap: any[], lastRouter: any = false) {
 }
 
 // 动态路由遍历，验证是否具备权限
-export function filterDynamicRoutes(routes: RouteRecordRaw[]) {
+export function filterDynamicRoutes(routes: any[]) {
     const res: any[] = [];
     routes.forEach(route => {
         if (route.permissions) {

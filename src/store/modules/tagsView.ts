@@ -158,7 +158,7 @@ const useTagsViewStore = defineStore('tags-view', {
             });
         },
         delLeftTags(view: RouteLocationNormalizedLoaded) {
-            return new Promise(resolve => {
+            return new Promise<any>(resolve => {
                 const index = this.visitedViews.findIndex(v => v.path === view.path);
                 if (index === -1) {
                     return;

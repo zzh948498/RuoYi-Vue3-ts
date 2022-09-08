@@ -11,7 +11,7 @@ export function listUser(query: any) {
 }
 
 // 查询用户详细
-export function getUser(userId: any) {
+export function getUser(userId?: any) {
     return request({
         url: '/system/user/' + parseStrEmpty(userId),
         method: 'get',

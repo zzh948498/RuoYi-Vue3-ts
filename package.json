@@ -11,6 +11,7 @@
     "dependencies": {
         "@element-plus/icons-vue": "2.0.9",
         "@vueuse/core": "9.2.0",
+        "@zeronejs/utils": "^1.4.0",
         "axios": "0.27.2",
         "echarts": "5.3.3",
         "element-plus": "2.2.16",
@@ -26,7 +27,6 @@
     },
     "devDependencies": {
         "@types/file-saver": "^2.0.5",
-        "@types/fs-extra": "^9.0.13",
         "@types/js-cookie": "^3.0.2",
         "@types/node": "^18.7.15",
         "@types/nprogress": "^0.2.0",
@@ -37,7 +37,6 @@
         "eslint": "^8.22.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-vue": "^9.3.0",
-        "fs-extra": "^10.1.0",
         "postcss": "^8.4.16",
         "sass": "1.52.1",
         "tailwindcss": "^3.1.8",

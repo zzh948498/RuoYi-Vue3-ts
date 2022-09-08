@@ -134,22 +134,27 @@ import { getGenTable, updateGenTable } from '@/api/tool/gen';
 import { optionselect as getDictOptionselect } from '@/api/system/dict/type';
 import basicInfoForm from './basicInfoForm.vue';
 import genInfoForm from './genInfoForm.vue';
+import { ComponentInternalInstance, getCurrentInstance, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 const route = useRoute();
-const { proxy } = getCurrentInstance();
+const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 
 const activeName = ref('columnInfo');
 const tableHeight = ref(document.documentElement.scrollHeight - 245 + 'px');
-const tables = ref([]);
-const columns = ref([]);
-const dictOptions = ref([]);
-const info = ref({});
+const tables = ref<any[]>([]);
+const columns = ref<any[]>([]);
+const dictOptions = ref<any[]>([]);
+const info = ref<any>({});
+const basicForm = ref<InstanceType<typeof basicInfoForm>>();
+const genForm = ref<InstanceType<typeof genInfoForm>>();
 
 /** 提交按钮 */
 function submitForm() {
-    const basicForm = proxy.$refs.basicInfo.$refs.basicInfoForm;
-    const genForm = proxy.$refs.genInfo.$refs.genInfoForm;
-    Promise.all([basicForm, genForm].map(getFormPromise)).then(res => {
+    // const basicForm = proxy!.$refs.basicInfo.$refs.basicInfoForm;
+    // const genForm = proxy!.$refs.genInfo.$refs.genInfoForm;
+
+    Promise.all([basicForm.value, genForm.value].map(getFormPromise)).then(res => {
         const validateResult = res.every(item => !!item);
         if (validateResult) {
             const genTable = Object.assign({}, info.value);
@@ -160,27 +165,27 @@ function submitForm() {
                 treeParentCode: info.value.treeParentCode,
                 parentMenuId: info.value.parentMenuId,
             };
-            updateGenTable(genTable).then(res => {
-                proxy.$modal.msgSuccess(res.msg);
+            updateGenTable(genTable).then((res: any) => {
+                proxy?.$modal.msgSuccess(res.msg);
                 if (res.code === 200) {
                     close();
                 }
             });
         } else {
-            proxy.$modal.msgError('表单校验未通过，请重新检查提交内容');
+            proxy?.$modal.msgError('表单校验未通过，请重新检查提交内容');
         }
     });
 }
-function getFormPromise(form) {
+function getFormPromise(form: any) {
     return new Promise(resolve => {
-        form.validate(res => {
+        form.validate((res: any) => {
             resolve(res);
         });
     });
 }
 function close() {
     const obj = { path: '/tool/gen', query: { t: Date.now(), pageNum: route.query.pageNum } };
-    proxy.$tab.closeOpenPage(obj);
+    proxy?.$tab.closeOpenPage(obj);
 }
 
 (() => {
