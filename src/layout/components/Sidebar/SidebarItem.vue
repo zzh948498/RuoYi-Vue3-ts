@@ -10,7 +10,7 @@
             <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path, onlyOneChild.query)">
                 <el-menu-item
                     :index="resolvePath(onlyOneChild.path)"
-                    :class="{ 'submenu-title-noDropdown': !isNest }"
+                    :class="{ 'sub-menu-title-noDropdown': !isNest }"
                 >
                     <svg-icon :icon-class="onlyOneChild.meta.icon || (item.meta && item.meta.icon)" />
                     <template #title
