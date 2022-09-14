@@ -37,9 +37,9 @@ pnpm i
 # 启动服务
 pnpm dev
 
-# 构建测试环境 yarn build:stage
-# 构建生产环境 yarn build:prod
-# 前端访问地址 http://localhost:80
+# 构建测试环境 pnpm build:stage
+# 构建生产环境 pnpm build:prod
+# 前端访问地址 http://localhost:5173
 ```
 
 ## 内置功能
