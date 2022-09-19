@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-        <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
+        <el-form v-show="showSearch" ref="queryRef" :model="queryParams" :inline="true" label-width="68px">
             <el-form-item label="表名称" prop="tableName">
                 <el-input
                     v-model="queryParams.tableName"
@@ -36,43 +36,43 @@
         <el-row :gutter="10" class="mb8">
             <el-col :span="1.5">
                 <el-button
+                    v-hasPermi="['tool:gen:code']"
                     type="primary"
                     plain
                     icon="Download"
                     @click="handleGenTable"
-                    v-hasPermi="['tool:gen:code']"
                     >生成</el-button
                 >
             </el-col>
             <el-col :span="1.5">
                 <el-button
+                    v-hasPermi="['tool:gen:import']"
                     type="info"
                     plain
                     icon="Upload"
                     @click="openImportTable"
-                    v-hasPermi="['tool:gen:import']"
                     >导入</el-button
                 >
             </el-col>
             <el-col :span="1.5">
                 <el-button
+                    v-hasPermi="['tool:gen:edit']"
                     type="success"
                     plain
                     icon="Edit"
                     :disabled="single"
                     @click="handleEditTable"
-                    v-hasPermi="['tool:gen:edit']"
                     >修改</el-button
                 >
             </el-col>
             <el-col :span="1.5">
                 <el-button
+                    v-hasPermi="['tool:gen:remove']"
                     type="danger"
                     plain
                     icon="Delete"
                     :disabled="multiple"
                     @click="handleDelete"
-                    v-hasPermi="['tool:gen:remove']"
                     >删除</el-button
                 >
             </el-col>
@@ -100,47 +100,47 @@
                 <template #default="scope">
                     <el-tooltip content="预览" placement="top">
                         <el-button
+                            v-hasPermi="['tool:gen:preview']"
                             link
                             type="primary"
                             icon="View"
                             @click="handlePreview(scope.row)"
-                            v-hasPermi="['tool:gen:preview']"
                         ></el-button>
                     </el-tooltip>
                     <el-tooltip content="编辑" placement="top">
                         <el-button
+                            v-hasPermi="['tool:gen:edit']"
                             link
                             type="primary"
                             icon="Edit"
                             @click="handleEditTable(scope.row)"
-                            v-hasPermi="['tool:gen:edit']"
                         ></el-button>
                     </el-tooltip>
                     <el-tooltip content="删除" placement="top">
                         <el-button
+                            v-hasPermi="['tool:gen:remove']"
                             link
                             type="primary"
                             icon="Delete"
                             @click="handleDelete(scope.row)"
-                            v-hasPermi="['tool:gen:remove']"
                         ></el-button>
                     </el-tooltip>
                     <el-tooltip content="同步" placement="top">
                         <el-button
+                            v-hasPermi="['tool:gen:edit']"
                             link
                             type="primary"
                             icon="Refresh"
                             @click="handleSynchDb(scope.row)"
-                            v-hasPermi="['tool:gen:edit']"
                         ></el-button>
                     </el-tooltip>
                     <el-tooltip content="生成代码" placement="top">
                         <el-button
+                            v-hasPermi="['tool:gen:code']"
                             link
                             type="primary"
                             icon="Download"
                             @click="handleGenTable(scope.row)"
-                            v-hasPermi="['tool:gen:code']"
                         ></el-button>
                     </el-tooltip>
                 </template>
@@ -148,15 +148,15 @@
         </el-table>
         <pagination
             v-show="total > 0"
-            :total="total"
             v-model:page="queryParams.pageNum"
             v-model:limit="queryParams.pageSize"
+            :total="total"
             @pagination="getList"
         />
         <!-- 预览界面 -->
         <el-dialog
-            :title="preview.title"
             v-model="preview.open"
+            :title="preview.title"
             width="80%"
             top="5vh"
             append-to-body
@@ -165,15 +165,15 @@
             <el-tabs v-model="preview.activeName">
                 <el-tab-pane
                     v-for="(value, key) in preview.data"
+                    :key="key"
                     :label="key.substring(key.lastIndexOf('/') + 1, key.indexOf('.vm'))"
                     :name="key.substring(key.lastIndexOf('/') + 1, key.indexOf('.vm'))"
-                    :key="key"
                 >
                     <el-link
-                        :underline="false"
-                        icon="DocumentCopy"
                         v-copyText="value"
                         v-copyText:callback="copyTextSuccess"
+                        :underline="false"
+                        icon="DocumentCopy"
                         style="float: right"
                         >&nbsp;复制</el-link
                     >
