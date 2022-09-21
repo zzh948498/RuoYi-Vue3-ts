@@ -16,7 +16,7 @@ export const isRelogin = { show: false };
 // 创建axios实例
 const service = axios.create({
     // axios中请求配置有baseURL选项，表示请求URL公共部分
-    baseURL: import.meta.env.VITE_APP_BASE_API,
+    baseURL: import.meta.env.VITE_APP_BASE_API2,
     // 超时
     timeout: 10000,
     headers: {

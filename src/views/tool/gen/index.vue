@@ -1,17 +1,17 @@
 <template>
     <div class="app-container">
         <el-form v-show="showSearch" ref="queryRef" :model="queryParams" :inline="true" label-width="68px">
-            <el-form-item label="表名称" prop="tableName">
+            <el-form-item label="表名称" prop="name">
                 <el-input
-                    v-model="queryParams.tableName"
+                    v-model="queryParams.name"
                     placeholder="请输入表名称"
                     clearable
                     @keyup.enter="handleQuery"
                 />
             </el-form-item>
-            <el-form-item label="表描述" prop="tableComment">
+            <el-form-item label="表描述" prop="desc">
                 <el-input
-                    v-model="queryParams.tableComment"
+                    v-model="queryParams.desc"
                     placeholder="请输入表描述"
                     clearable
                     @keyup.enter="handleQuery"
@@ -83,19 +83,22 @@
             <el-table-column type="selection" align="center" width="55"></el-table-column>
             <el-table-column label="序号" type="index" width="50" align="center">
                 <template #default="scope">
-                    <span>{{ (queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1 }}</span>
+                    <span>{{ (queryParams.page - 1) * queryParams.psize + scope.$index + 1 }}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="表名称" align="center" prop="tableName" :show-overflow-tooltip="true" />
-            <el-table-column
-                label="表描述"
-                align="center"
-                prop="tableComment"
-                :show-overflow-tooltip="true"
-            />
-            <el-table-column label="实体" align="center" prop="className" :show-overflow-tooltip="true" />
-            <el-table-column label="创建时间" align="center" prop="createTime" width="160" />
-            <el-table-column label="更新时间" align="center" prop="updateTime" width="160" />
+            <el-table-column label="表名称" align="center" prop="name" :show-overflow-tooltip="true" />
+            <el-table-column label="表描述" align="center" prop="desc" :show-overflow-tooltip="true" />
+            <!-- <el-table-column label="实体" align="center" prop="className" :show-overflow-tooltip="true" /> -->
+            <el-table-column label="创建时间" align="center" width="160">
+                <template #default="scope">
+                    <span>{{ dateFormat(scope.row.createdAt) }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="更新时间" align="center" width="160" >
+                <template #default="scope">
+                    <span>{{ dateFormat(scope.row.updatedAt) }}</span>
+                </template>
+            </el-table-column>
             <el-table-column label="操作" align="center" width="330" class-name="small-padding fixed-width">
                 <template #default="scope">
                     <el-tooltip content="预览" placement="top">
@@ -148,8 +151,8 @@
         </el-table>
         <pagination
             v-show="total > 0"
-            v-model:page="queryParams.pageNum"
-            v-model:limit="queryParams.pageSize"
+            v-model:page="queryParams.page"
+            v-model:limit="queryParams.psize"
             :total="total"
             @pagination="getList"
         />
@@ -160,7 +163,7 @@
             width="80%"
             top="5vh"
             append-to-body
-            custom-class="scrollbar"
+            class="scrollbar"
         >
             <el-tabs v-model="preview.activeName">
                 <el-tab-pane
@@ -186,9 +189,11 @@
 </template>
 
 <script setup name="Gen" lang="ts">
+import { postGenTableList } from '@/api/controller/genTable/postGenTableList';
+import { GenTableEntity } from '@/api/interface';
 import { listTable, previewTable, delTable, genCode, synchDb } from '@/api/tool/gen';
 import router from '@/router';
-import { oneOf } from '@zeronejs/utils';
+import { oneOf, dateFormat } from '@zeronejs/utils';
 import { getCurrentInstance, ComponentInternalInstance, ref, reactive, toRefs, onActivated } from 'vue';
 import { useRoute } from 'vue-router';
 import importTable from './importTable.vue';
@@ -196,7 +201,7 @@ import importTable from './importTable.vue';
 const route = useRoute();
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 
-const tableList = ref<any[]>([]);
+const tableList = ref<GenTableEntity[]>([]);
 const loading = ref(true);
 const showSearch = ref(true);
 const ids = ref<any[]>([]);
@@ -208,7 +213,12 @@ const dateRange = ref<any[]>([]);
 const uniqueId = ref('');
 
 const data = reactive<{
-    queryParams: any;
+    queryParams: {
+        page: number;
+        psize: number;
+        name?: string;
+        desc?: string;
+    };
     preview: {
         open: boolean;
         title: string;
@@ -217,10 +227,10 @@ const data = reactive<{
     };
 }>({
     queryParams: {
-        pageNum: 1,
-        pageSize: 10,
-        tableName: undefined,
-        tableComment: undefined,
+        page: 1,
+        psize: 10,
+        name: undefined,
+        desc: undefined,
     },
     preview: {
         open: false,
@@ -236,7 +246,7 @@ onActivated(() => {
     const time = oneOf(route.query.t);
     if (time && time !== uniqueId.value) {
         uniqueId.value = time;
-        queryParams.value.pageNum = Number(route.query.pageNum);
+        queryParams.value.page = Number(route.query.page);
         dateRange.value = [];
         proxy?.resetForm('queryForm');
         getList();
@@ -244,28 +254,32 @@ onActivated(() => {
 });
 
 /** 查询表集合 */
-function getList() {
+async function getList() {
     loading.value = true;
-    listTable(proxy?.addDateRange(queryParams.value, dateRange.value)).then((response: any) => {
-        tableList.value = response.rows;
-        total.value = response.total;
-        loading.value = false;
-    });
+    const { data } = await postGenTableList({});
+    tableList.value = data.data;
+    total.value = data.total;
+    loading.value = false;
+    // listTable(proxy?.addDateRange(queryParams.value, dateRange.value)).then((response: any) => {
+    //     tableList.value = response.rows;
+    //     total.value = response.total;
+    //     loading.value = false;
+    // });
 }
 /** 搜索按钮操作 */
 function handleQuery() {
-    queryParams.value.pageNum = 1;
+    queryParams.value.page = 1;
     getList();
 }
 /** 生成代码操作 */
 function handleGenTable(row: any) {
-    const tbNames = row.tableName || tableNames.value;
+    const tbNames = row.name || tableNames.value;
     if (tbNames === '') {
         proxy?.$modal.msgError('请选择要生成的数据');
         return;
     }
     if (row.genType === '1') {
-        genCode(row.tableName).then(response => {
+        genCode(row.name).then(response => {
             proxy?.$modal.msgSuccess('成功生成到自定义路径：' + row.genPath);
         });
     } else {
@@ -274,11 +288,11 @@ function handleGenTable(row: any) {
 }
 /** 同步数据库操作 */
 function handleSynchDb(row: any) {
-    const tableName = row.tableName;
+    const name = row.name;
     proxy?.$modal
-        .confirm('确认要强制同步"' + tableName + '"表结构吗？')
+        .confirm('确认要强制同步"' + name + '"表结构吗？')
         .then(function () {
-            return synchDb(tableName);
+            return synchDb(name);
         })
         .then(() => {
             proxy!.$modal.msgSuccess('同步成功');
@@ -312,14 +326,14 @@ function copyTextSuccess() {
 // 多选框选中数据
 function handleSelectionChange(selection: any[]) {
     ids.value = selection.map(item => item.tableId);
-    tableNames.value = selection.map(item => item.tableName);
+    tableNames.value = selection.map(item => item.name);
     single.value = selection.length !== 1;
     multiple.value = !selection.length;
 }
 /** 修改按钮操作 */
-function handleEditTable(row: any) {
-    const tableId = row.tableId || ids.value[0];
-    router.push({ path: '/tool/gen-edit/index/' + tableId, query: { pageNum: queryParams.value.pageNum } });
+function handleEditTable(row: GenTableEntity) {
+    const tableId = row.id || ids.value[0];
+    router.push({ path: '/tool/gen-edit/index/' + tableId, query: { page: queryParams.value.page } });
 }
 /** 删除按钮操作 */
 function handleDelete(row: any) {

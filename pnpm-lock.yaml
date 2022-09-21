@@ -3,7 +3,6 @@ lockfileVersion: 5.4
 specifiers:
   '@element-plus/icons-vue': 2.0.9
   '@types/file-saver': ^2.0.5
-  '@types/fs-extra': ^9.0.13
   '@types/js-cookie': ^3.0.2
   '@types/node': ^18.7.15
   '@types/nprogress': ^0.2.0
@@ -11,7 +10,7 @@ specifiers:
   '@typescript-eslint/parser': ^5.33.1
   '@vitejs/plugin-vue': 3.1.0
   '@vueuse/core': 9.2.0
-  '@zeronejs/utils': ^1.4.0
+  '@zeronejs/utils': ^1.4.1
   autoprefixer: ^10.4.8
   axios: 0.27.2
   echarts: 5.3.3
@@ -20,7 +19,6 @@ specifiers:
   eslint-config-prettier: ^8.5.0
   eslint-plugin-vue: ^9.3.0
   file-saver: 2.0.5
-  fs-extra: ^10.1.0
   fuse.js: 6.5.3
   js-cookie: 3.0.1
   jsencrypt: 3.2.1
@@ -43,7 +41,7 @@ specifiers:
 dependencies:
   '@element-plus/icons-vue': 2.0.9_vue@3.2.38
   '@vueuse/core': 9.2.0_vue@3.2.38
-  '@zeronejs/utils': 1.4.0
+  '@zeronejs/utils': 1.4.1
   axios: 0.27.2
   echarts: 5.3.3
   element-plus: 2.2.16_vue@3.2.38
@@ -59,7 +57,6 @@ dependencies:
 
 devDependencies:
   '@types/file-saver': 2.0.5
-  '@types/fs-extra': 9.0.13
   '@types/js-cookie': 3.0.2
   '@types/node': 18.7.15
   '@types/nprogress': 0.2.0
@@ -70,7 +67,6 @@ devDependencies:
   eslint: 8.23.0
   eslint-config-prettier: 8.5.0_eslint@8.23.0
   eslint-plugin-vue: 9.4.0_eslint@8.23.0
-  fs-extra: 10.1.0
   postcss: 8.4.16
   sass: 1.52.1
   tailwindcss: 3.1.8_ts-node@10.9.1
@@ -263,12 +259,6 @@ packages:
 
   /@types/file-saver/2.0.5:
     resolution: {integrity: sha512-zv9kNf3keYegP5oThGLaPk8E081DFDuwfqjtiTzm6PoxChdJ1raSuADf2YGCVIyrSynLrgc8JWv296s7Q7pQSQ==}
-    dev: true
-
-  /@types/fs-extra/9.0.13:
-    resolution: {integrity: sha512-nEnwB++1u5lVDM2UI4c1+5R+FYaKfaAzS4OococimjVm3nQw3TuzH5UNsocrcTBbhnerblyHj4A49qXbIiZdpA==}
-    dependencies:
-      '@types/node': 18.7.15
     dev: true
 
   /@types/js-cookie/3.0.2:
@@ -543,8 +533,8 @@ packages:
       - '@vue/composition-api'
       - vue
 
-  /@zeronejs/utils/1.4.0:
-    resolution: {integrity: sha512-w/4WPmnKYPvSgWJWZv4IkCJBEnoZmJe6btu7SoZPXEcTdy1JeswDIXzQ6M0DicqG6nSVXA0bhGT/3RXV3SYK8w==}
+  /@zeronejs/utils/1.4.1:
+    resolution: {integrity: sha512-zZ8IwFObfWBnfprmEeNZnqF+wd8KF4e9rSLage3Fkf59/5l6I5Sm/aKXr1HCaVJk2iE6l9oRYmdMbSYfBGHDTw==}
     engines: {node: '>=12.0.0'}
     dev: false
 
