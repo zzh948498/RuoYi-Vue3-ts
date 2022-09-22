@@ -39,6 +39,16 @@
                     v-hasPermi="['tool:gen:code']"
                     type="primary"
                     plain
+                    icon="Plus"
+                    @click="handleAddTable"
+                    >新建</el-button
+                >
+            </el-col>
+            <el-col :span="1.5">
+                <el-button
+                    v-hasPermi="['tool:gen:code']"
+                    type="primary"
+                    plain
                     icon="Download"
                     @click="handleGenTable"
                     >生成</el-button
@@ -94,7 +104,7 @@
                     <span>{{ dateFormat(scope.row.createdAt) }}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="更新时间" align="center" width="160" >
+            <el-table-column label="更新时间" align="center" width="160">
                 <template #default="scope">
                     <span>{{ dateFormat(scope.row.updatedAt) }}</span>
                 </template>
@@ -156,6 +166,32 @@
             :total="total"
             @pagination="getList"
         />
+        <!-- 添加或修改用户配置对话框 -->
+        <el-dialog v-model="open" title="添加表" width="600px" append-to-body>
+            <el-form ref="tableAddRef" :model="form" :rules="rules" label-width="80px">
+                <!-- <el-row>
+                    <el-col :span="12"> -->
+                <el-form-item label="表名称" prop="name">
+                    <el-input v-model="form.name" placeholder="请输入表名称" maxlength="30" />
+                </el-form-item>
+                <!-- </el-col>
+                </el-row> -->
+
+                <!-- <el-row>
+                    <el-col :span="12"> -->
+                <el-form-item label="表描述" prop="desc">
+                    <el-input v-model="form.desc" placeholder="表描述" maxlength="30" />
+                </el-form-item>
+                <!-- </el-col>
+                </el-row> -->
+            </el-form>
+            <template #footer>
+                <div class="dialog-footer">
+                    <el-button type="primary" @click="submitForm">确 定</el-button>
+                    <el-button @click="open = false">取 消</el-button>
+                </div>
+            </template>
+        </el-dialog>
         <!-- 预览界面 -->
         <el-dialog
             v-model="preview.open"
@@ -189,11 +225,14 @@
 </template>
 
 <script setup name="Gen" lang="ts">
+import { deleteGenTableRemoveId } from '@/api/controller/genTable/deleteGenTableRemoveId';
+import { postGenTableCreate } from '@/api/controller/genTable/postGenTableCreate';
 import { postGenTableList } from '@/api/controller/genTable/postGenTableList';
-import { GenTableEntity } from '@/api/interface';
+import { GenTableCreateDto, GenTableEntity } from '@/api/interface';
 import { listTable, previewTable, delTable, genCode, synchDb } from '@/api/tool/gen';
 import router from '@/router';
 import { oneOf, dateFormat } from '@zeronejs/utils';
+import { ElMessage, FormInstance } from 'element-plus';
 import { getCurrentInstance, ComponentInternalInstance, ref, reactive, toRefs, onActivated } from 'vue';
 import { useRoute } from 'vue-router';
 import importTable from './importTable.vue';
@@ -201,6 +240,7 @@ import importTable from './importTable.vue';
 const route = useRoute();
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 
+const open = ref(false);
 const tableList = ref<GenTableEntity[]>([]);
 const loading = ref(true);
 const showSearch = ref(true);
@@ -211,7 +251,19 @@ const total = ref(0);
 const tableNames = ref<any[]>([]);
 const dateRange = ref<any[]>([]);
 const uniqueId = ref('');
-
+const tableAddRef = ref<FormInstance>();
+const form = ref<GenTableCreateDto>({
+    name: '',
+    desc: '',
+    tplCategory: 'crud',
+});
+const rules = ref({
+    name: [
+        { required: true, message: '表名称不能为空', trigger: 'blur' },
+        { min: 2, max: 20, message: '表名称长度必须介于 2 和 20 之间', trigger: 'blur' },
+    ],
+    desc: [{ required: true, message: '表描述不能为空', trigger: 'blur' }],
+});
 const data = reactive<{
     queryParams: {
         page: number;
@@ -311,6 +363,20 @@ function resetQuery() {
     proxy?.resetForm('queryRef');
     handleQuery();
 }
+/** 新增按钮操作 */
+function handleAddTable() {
+    open.value = true;
+}
+/** 提交按钮 */
+async function submitForm() {
+    const valid = await tableAddRef.value?.validate();
+    if (valid) {
+        await postGenTableCreate(form.value);
+        ElMessage.success('新增成功');
+        open.value = false;
+        getList();
+    }
+}
 /** 预览按钮 */
 function handlePreview(row: any) {
     previewTable(row.tableId).then(response => {
@@ -336,12 +402,13 @@ function handleEditTable(row: GenTableEntity) {
     router.push({ path: '/tool/gen-edit/index/' + tableId, query: { page: queryParams.value.page } });
 }
 /** 删除按钮操作 */
-function handleDelete(row: any) {
-    const tableIds = row.tableId || ids.value;
+function handleDelete(row: GenTableEntity) {
+    // const tableIds = row.id || ids.value;
+    const tableIds = row.id;
     proxy?.$modal
         .confirm('是否确认删除表编号为"' + tableIds + '"的数据项？')
         .then(function () {
-            return delTable(tableIds);
+            return deleteGenTableRemoveId({ id: tableIds });
         })
         .then(() => {
             getList();

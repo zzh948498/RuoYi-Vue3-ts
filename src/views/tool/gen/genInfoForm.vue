@@ -12,56 +12,7 @@
                     </el-select>
                 </el-form-item>
             </el-col>
-
-            <el-col :span="12">
-                <el-form-item prop="packageName">
-                    <template #label>
-                        生成包路径
-                        <el-tooltip content="生成在哪个java包下，例如 com.ruoyi.system" placement="top">
-                            <el-icon><question-filled /></el-icon>
-                        </el-tooltip>
-                    </template>
-                    <el-input v-model="info.packageName" />
-                </el-form-item>
-            </el-col>
-
-            <el-col :span="12">
-                <el-form-item prop="moduleName">
-                    <template #label>
-                        生成模块名
-                        <el-tooltip content="可理解为子系统名，例如 system" placement="top">
-                            <el-icon><question-filled /></el-icon>
-                        </el-tooltip>
-                    </template>
-                    <el-input v-model="info.moduleName" />
-                </el-form-item>
-            </el-col>
-
-            <el-col :span="12">
-                <el-form-item prop="businessName">
-                    <template #label>
-                        生成业务名
-                        <el-tooltip content="可理解为功能英文名，例如 user" placement="top">
-                            <el-icon><question-filled /></el-icon>
-                        </el-tooltip>
-                    </template>
-                    <el-input v-model="info.businessName" />
-                </el-form-item>
-            </el-col>
-
-            <el-col :span="12">
-                <el-form-item prop="functionName">
-                    <template #label>
-                        生成功能名
-                        <el-tooltip content="用作类描述，例如 用户" placement="top">
-                            <el-icon><question-filled /></el-icon>
-                        </el-tooltip>
-                    </template>
-                    <el-input v-model="info.functionName" />
-                </el-form-item>
-            </el-col>
-
-            <el-col :span="12">
+            <!-- <el-col :span="12">
                 <el-form-item>
                     <template #label>
                         上级菜单
@@ -76,9 +27,9 @@
                         placeholder="请选择系统菜单"
                     />
                 </el-form-item>
-            </el-col>
+            </el-col> -->
 
-            <el-col :span="12">
+            <!-- <el-col :span="12">
                 <el-form-item prop="genType">
                     <template #label>
                         生成代码方式
@@ -89,9 +40,9 @@
                     <el-radio v-model="info.genType" label="0">zip压缩包</el-radio>
                     <el-radio v-model="info.genType" label="1">自定义路径</el-radio>
                 </el-form-item>
-            </el-col>
+            </el-col> -->
 
-            <el-col :span="24" v-if="info.genType == '1'">
+            <!-- <el-col :span="24" v-if="info.genType == '1'">
                 <el-form-item prop="genPath">
                     <template #label>
                         自定义路径
@@ -120,10 +71,10 @@
                         </template>
                     </el-input>
                 </el-form-item>
-            </el-col>
+            </el-col> -->
         </el-row>
 
-        <template v-if="info.tplCategory == 'tree'">
+        <!-- <template v-if="info.tplCategory == 'tree'">
             <h4 class="form-header">其他信息</h4>
             <el-row v-show="info.tplCategory == 'tree'">
                 <el-col :span="12">
@@ -181,13 +132,13 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-        </template>
+        </template> -->
 
         <template v-if="info.tplCategory == 'sub'">
             <h4 class="form-header">关联信息</h4>
             <el-row>
                 <el-col :span="12">
-                    <el-form-item>
+                    <el-form-item prop="subTableName">
                         <template #label>
                             关联子表的表名
                             <el-tooltip content="关联子表的表名， 如：sys_user" placement="top">
@@ -198,17 +149,35 @@
                             <el-option
                                 v-for="(table, index) in tables"
                                 :key="index"
-                                :label="table.tableName + '：' + table.tableComment"
-                                :value="table.tableName"
+                                :label="table.name + '：' + table.desc"
+                                :value="table.name"
                             ></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
+                    <el-form-item prop="relations">
+                        <template #label>主子表关系类型</template>
+                        <el-select v-model="info.relations">
+                            <el-option label="一对一" value="OneToOne" />
+                            <el-option label="多对一" value="ManyToOne" />
+                            <el-option label="一对多" value="OneToMany" />
+                            <!-- <el-option label="多对多" value="ManyToMany" /> -->
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col v-show="info.subTableName" :span="12">
                     <el-form-item>
+                        <template #label><label>主子表关系字段</label> </template>
+                        <!-- <el-input v-model="input" disabled placeholder="Please input" /> -->
+                        <div>{{ lowerFirst(info.subTableName).replace(/Entity$/, '') }}</div>
+                    </el-form-item>
+                </el-col>
+                <el-col v-if="info.relations === 'OneToOne' || info.relations === 'ManyToOne'" :span="12">
+                    <el-form-item prop="subTableFkName">
                         <template #label>
                             子表关联的外键名
-                            <el-tooltip content="子表关联的外键名， 如：user_id" placement="top">
+                            <el-tooltip content="子表关联的外键名， 如：userId" placement="top">
                                 <el-icon><question-filled /></el-icon>
                             </el-tooltip>
                         </template>
@@ -216,8 +185,8 @@
                             <el-option
                                 v-for="(column, index) in subColumns"
                                 :key="index"
-                                :label="column.columnName + '：' + column.columnComment"
-                                :value="column.columnName"
+                                :label="column.name + '：' + column.desc"
+                                :value="column.name"
                             ></el-option>
                         </el-select>
                     </el-form-item>
@@ -229,44 +198,47 @@
 
 <!-- eslint-disable vue/no-mutating-props -->
 <script setup lang="ts">
+import { GenColumnsEntity, GenTableEntity } from '@/api/interface';
 import { listMenu } from '@/api/system/menu';
 import { ref, getCurrentInstance, ComponentInternalInstance, watch } from 'vue';
+import { lowerFirst } from 'lodash';
+import { FormInstance } from 'element-plus';
 
-const subColumns = ref<any[]>([]);
+const subColumns = ref<GenColumnsEntity[]>([]);
 const menuOptions = ref({});
+const genInfoForm = ref<FormInstance>();
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 
 const props = defineProps({
     info: {
-        type: Object as () => any,
-        default: null,
+        type: Object as () => Partial<GenTableEntity>,
+        default: () => ({}),
     },
     tables: {
-        type: Array as () => Array<any>,
-        default: null,
+        type: Array as () => Array<GenTableEntity>,
+        default: () => [],
     },
 });
 
 // 表单校验
 const rules = ref({
     tplCategory: [{ required: true, message: '请选择生成模板', trigger: 'blur' }],
-    packageName: [{ required: true, message: '请输入生成包路径', trigger: 'blur' }],
-    moduleName: [{ required: true, message: '请输入生成模块名', trigger: 'blur' }],
-    businessName: [{ required: true, message: '请输入生成业务名', trigger: 'blur' }],
-    functionName: [{ required: true, message: '请输入生成功能名', trigger: 'blur' }],
+    subTableName: [{ required: true, message: '请选择子表名称', trigger: 'blur' }],
+    relations: [{ required: true, message: '请选择关系类型', trigger: 'blur' }],
+    subTableFkName: [{ required: true, message: '请选择关联的外键名', trigger: 'blur' }],
 });
-function subSelectChange(value: any) {
+function subSelectChange() {
     props.info.subTableFkName = '';
 }
-function tplSelectChange(value: any) {
+function tplSelectChange(value: string) {
     if (value !== 'sub') {
         props.info.subTableName = '';
         props.info.subTableFkName = '';
     }
 }
-function setSubTableColumns(value: any) {
+function setSubTableColumns(value?: string) {
     for (let item in props.tables) {
-        const name = props.tables[item].tableName;
+        const name = props.tables[item].name;
         if (value === name) {
             subColumns.value = props.tables[item].columns;
             break;
@@ -288,4 +260,5 @@ watch(
 );
 
 getMenuTreeselect();
+defineExpose({ genInfoForm });
 </script>

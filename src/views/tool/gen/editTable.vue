@@ -149,9 +149,9 @@
                     </el-table>
                 </el-form>
             </el-tab-pane>
-            <!-- <el-tab-pane label="生成信息" name="genInfo">
+            <el-tab-pane label="生成信息" name="genInfo">
                 <gen-info-form ref="genFormInstance" :info="info" :tables="tables" />
-            </el-tab-pane> -->
+            </el-tab-pane>
         </el-tabs>
         <el-form label-width="100px">
             <div style="text-align: center; margin-left: -100px; margin-top: 10px">
@@ -229,15 +229,17 @@ const addColumns = () => {
 /** 提交按钮 */
 async function submitForm() {
     const basicForm = basicFormInstance.value?.basicInfoForm;
-    debugger;
+    const genInfoForm = genFormInstance.value?.genInfoForm;
     // const genForm = genFormInstance.value?.$refs.genInfoForm as Ref<FormInstance>;
-    const [basicCheck, columnsCheck] = await Promise.all(
-        [basicForm!, columnsFormRef.value!].map(getFormPromise)
+    const [basicCheck, columnsCheck,genInfoCheck] = await Promise.all(
+        [basicForm!, columnsFormRef.value!, genInfoForm!].map(getFormPromise)
     );
     if (!basicCheck) {
         return ElMessage.error('基本信息校验未通过，请重新检查提交内容');
     } else if (!columnsCheck) {
         return ElMessage.error('字段校验未通过，请重新检查提交内容');
+    }else if(!genInfoCheck){
+        return ElMessage.error('生成信息校验未通过，请重新检查提交内容');
     }
     // const validateResult = res.every(item => !!item);
     // const genTable = Object.assign({}, info.value);
