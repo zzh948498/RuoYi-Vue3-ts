@@ -9,6 +9,7 @@ export * from "./apiTypes/GenTableCreateDto";
 export * from "./apiTypes/GenTableListWhereDto";
 export * from "./apiTypes/GenTableListDto";
 export * from "./apiTypes/GenTableUpdateDto";
+export * from "./apiTypes/BodyIdsDto";
 export * from "./apiTypes/RDto";
 export * from "./apiTypes/RListDto";
 

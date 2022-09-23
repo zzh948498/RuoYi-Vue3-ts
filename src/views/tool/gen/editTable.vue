@@ -168,14 +168,17 @@ import basicInfoForm from './basicInfoForm.vue';
 import genInfoForm from './genInfoForm.vue';
 import { ref } from 'vue';
 import { RouteLocationRaw, useRoute } from 'vue-router';
-import { getGenTableDetailsId } from '@/api/controller/genTable/getGenTableDetailsId';
-import { deleteGenColumnsRemoveId } from '@/api/controller/genColumns/deleteGenColumnsRemoveId';
 import { oneOf, PartialByKeys } from '@zeronejs/utils';
 import { getGenTableAll } from '@/api/controller/genTable/getGenTableAll';
 import { GenColumnsEntity, GenTableEntity } from '@/api/interface';
 import { ElMessage, FormInstance } from 'element-plus';
 import { ElModalConfirm } from '@/plugins/ElModal';
 import tab from '@/plugins/tab';
+import { patchGenTableUpdateById } from '@/api/controller/genTable/patchGenTableUpdateById';
+import { deleteGenColumnsRemoveById } from '@/api/controller/genColumns/deleteGenColumnsRemoveById';
+import { getGenTableDetailsById } from '@/api/controller/genTable/getGenTableDetailsById';
+import { patchGenColumnsUpdateById } from '@/api/controller/genColumns/patchGenColumnsUpdateById';
+import { postGenColumnsCreate } from '@/api/controller/genColumns/postGenColumnsCreate';
 
 const route = useRoute();
 type ColumnsListItem = PartialByKeys<GenColumnsEntity, 'id' | 'createdAt' | 'updatedAt' | 'table'>;
@@ -231,16 +234,26 @@ async function submitForm() {
     const basicForm = basicFormInstance.value?.basicInfoForm;
     const genInfoForm = genFormInstance.value?.genInfoForm;
     // const genForm = genFormInstance.value?.$refs.genInfoForm as Ref<FormInstance>;
-    const [basicCheck, columnsCheck,genInfoCheck] = await Promise.all(
+    const [basicCheck, columnsCheck, genInfoCheck] = await Promise.all(
         [basicForm!, columnsFormRef.value!, genInfoForm!].map(getFormPromise)
     );
     if (!basicCheck) {
         return ElMessage.error('基本信息校验未通过，请重新检查提交内容');
     } else if (!columnsCheck) {
         return ElMessage.error('字段校验未通过，请重新检查提交内容');
-    }else if(!genInfoCheck){
+    } else if (!genInfoCheck) {
         return ElMessage.error('生成信息校验未通过，请重新检查提交内容');
     }
+    await Promise.all([
+        ...columnsForm.value.columns.map(it => {
+            if (!it.id) {
+                return postGenColumnsCreate(it);
+            }
+            return patchGenColumnsUpdateById({ id: it.id }, it);
+        }),
+        patchGenTableUpdateById({ id: info.value!.id }, info.value ?? {})
+    ]);
+    ElMessage.success('修改成功');
     // const validateResult = res.every(item => !!item);
     // const genTable = Object.assign({}, info.value);
     // genTable.columns = columns.value;
@@ -273,7 +286,7 @@ async function handleDelete(row: ColumnsListItem, index: number) {
         } catch (e) {
             return console.log(e);
         }
-        await deleteGenColumnsRemoveId({ id: row.id });
+        await deleteGenColumnsRemoveById({ id: row.id });
 
         await getList();
     } else {
@@ -299,7 +312,7 @@ const getList = async () => {
         //     tables.value = res.data.tables;
         // });
         const [tableInfo, tableAll] = await Promise.all([
-            getGenTableDetailsId({ id: tableId }),
+            getGenTableDetailsById({ id: tableId }),
             getGenTableAll({}),
         ]);
         tables.value = tableAll.data.data;

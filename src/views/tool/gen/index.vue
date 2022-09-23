@@ -82,7 +82,7 @@
                     plain
                     icon="Delete"
                     :disabled="multiple"
-                    @click="handleDelete"
+                    @click="handleDeletes"
                     >删除</el-button
                 >
             </el-col>
@@ -225,11 +225,13 @@
 </template>
 
 <script setup name="Gen" lang="ts">
-import { deleteGenTableRemoveId } from '@/api/controller/genTable/deleteGenTableRemoveId';
+import { deleteGenTableRemoveById } from '@/api/controller/genTable/deleteGenTableRemoveById';
 import { postGenTableCreate } from '@/api/controller/genTable/postGenTableCreate';
 import { postGenTableList } from '@/api/controller/genTable/postGenTableList';
+import { postGenTableRemoves } from '@/api/controller/genTable/postGenTableRemoves';
 import { GenTableCreateDto, GenTableEntity } from '@/api/interface';
 import { listTable, previewTable, delTable, genCode, synchDb } from '@/api/tool/gen';
+import { ElModalConfirm } from '@/plugins/ElModal';
 import router from '@/router';
 import { oneOf, dateFormat } from '@zeronejs/utils';
 import { ElMessage, FormInstance } from 'element-plus';
@@ -244,7 +246,7 @@ const open = ref(false);
 const tableList = ref<GenTableEntity[]>([]);
 const loading = ref(true);
 const showSearch = ref(true);
-const ids = ref<any[]>([]);
+const ids = ref<number[]>([]);
 const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
@@ -375,6 +377,7 @@ async function submitForm() {
         ElMessage.success('新增成功');
         open.value = false;
         getList();
+        tableAddRef.value?.resetFields();
     }
 }
 /** 预览按钮 */
@@ -391,7 +394,7 @@ function copyTextSuccess() {
 }
 // 多选框选中数据
 function handleSelectionChange(selection: any[]) {
-    ids.value = selection.map(item => item.tableId);
+    ids.value = selection.map(item => item.id);
     tableNames.value = selection.map(item => item.name);
     single.value = selection.length !== 1;
     multiple.value = !selection.length;
@@ -402,21 +405,26 @@ function handleEditTable(row: GenTableEntity) {
     router.push({ path: '/tool/gen-edit/index/' + tableId, query: { page: queryParams.value.page } });
 }
 /** 删除按钮操作 */
-function handleDelete(row: GenTableEntity) {
-    // const tableIds = row.id || ids.value;
-    const tableIds = row.id;
-    proxy?.$modal
-        .confirm('是否确认删除表编号为"' + tableIds + '"的数据项？')
-        .then(function () {
-            return deleteGenTableRemoveId({ id: tableIds });
-        })
-        .then(() => {
-            getList();
-            proxy!.$modal.msgSuccess('删除成功');
-        })
-        .catch((e: any) => {
-            console.log(e);
-        });
+async function handleDelete(row: GenTableEntity) {
+    try {
+        await ElModalConfirm('是否确认删除表编号为"' + row.id + '"的数据项？');
+    } catch (e) {
+        return console.log(e);
+    }
+    await deleteGenTableRemoveById({ id: row.id });
+    getList();
+    ElMessage.success('删除成功');
+}
+/** 删除按钮操作 */
+async function handleDeletes() {
+    try {
+        await ElModalConfirm('是否确认删除表编号为"' + ids.value + '"的数据项？');
+    } catch (e) {
+        return console.log(e);
+    }
+    await postGenTableRemoves({ ids: ids.value });
+    getList();
+    ElMessage.success('删除成功');
 }
 
 getList();
