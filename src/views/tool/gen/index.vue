@@ -226,6 +226,7 @@
 
 <script setup name="Gen" lang="ts">
 import { deleteGenTableRemoveById } from '@/api/controller/genTable/deleteGenTableRemoveById';
+import { postGenCode } from '@/api/controller/genTable/postGenCode';
 import { postGenTableCreate } from '@/api/controller/genTable/postGenTableCreate';
 import { postGenTableList } from '@/api/controller/genTable/postGenTableList';
 import { postGenTableRemoves } from '@/api/controller/genTable/postGenTableRemoves';
@@ -238,6 +239,7 @@ import { ElMessage, FormInstance } from 'element-plus';
 import { getCurrentInstance, ComponentInternalInstance, ref, reactive, toRefs, onActivated } from 'vue';
 import { useRoute } from 'vue-router';
 import importTable from './importTable.vue';
+import { saveAs } from 'file-saver';
 
 const route = useRoute();
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
@@ -326,19 +328,14 @@ function handleQuery() {
     getList();
 }
 /** 生成代码操作 */
-function handleGenTable(row: any) {
-    const tbNames = row.name || tableNames.value;
-    if (tbNames === '') {
-        proxy?.$modal.msgError('请选择要生成的数据');
-        return;
-    }
-    if (row.genType === '1') {
-        genCode(row.name).then(response => {
-            proxy?.$modal.msgSuccess('成功生成到自定义路径：' + row.genPath);
-        });
-    } else {
-        proxy?.$download.zip('/code/gen/batchGenCode?tables=' + tbNames, 'ruoyi');
-    }
+async function handleGenTable(row: GenTableEntity) {
+    const { data } = await postGenCode({
+        ids: [row.id],
+    });
+    const arraybuffer = new Int8Array(data.data);
+    // 再输入到 Blob 生成文件
+    const blob = new Blob([arraybuffer], { type: 'application/zip' });
+    saveAs(blob, 'ruoyi.zip');
 }
 /** 同步数据库操作 */
 function handleSynchDb(row: any) {

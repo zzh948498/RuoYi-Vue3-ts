@@ -54,22 +54,22 @@
                         </el-table-column>
                         <el-table-column label="插入" min-width="5%">
                             <template #default="scope">
-                                <el-checkbox v-model="scope.row.isInsert" true-label="1"></el-checkbox>
+                                <el-checkbox v-model="scope.row.isInsert"></el-checkbox>
                             </template>
                         </el-table-column>
                         <el-table-column label="编辑" min-width="5%">
                             <template #default="scope">
-                                <el-checkbox v-model="scope.row.isEdit" true-label="1"></el-checkbox>
+                                <el-checkbox v-model="scope.row.isEdit"></el-checkbox>
                             </template>
                         </el-table-column>
                         <el-table-column label="列表" min-width="5%">
                             <template #default="scope">
-                                <el-checkbox v-model="scope.row.isList" true-label="1"></el-checkbox>
+                                <el-checkbox v-model="scope.row.isList"></el-checkbox>
                             </template>
                         </el-table-column>
                         <el-table-column label="查询" min-width="5%">
                             <template #default="scope">
-                                <el-checkbox v-model="scope.row.isQuery" true-label="1"></el-checkbox>
+                                <el-checkbox v-model="scope.row.isQuery"></el-checkbox>
                             </template>
                         </el-table-column>
                         <!-- <el-table-column label="查询方式" min-width="10%">
@@ -88,7 +88,7 @@
                         </el-table-column> -->
                         <el-table-column label="必填" min-width="5%">
                             <template #default="scope">
-                                <el-checkbox v-model="scope.row.required" true-label="1"></el-checkbox>
+                                <el-checkbox v-model="scope.row.required"></el-checkbox>
                             </template>
                         </el-table-column>
                         <el-table-column label="显示类型" min-width="12%">
@@ -251,7 +251,7 @@ async function submitForm() {
             }
             return patchGenColumnsUpdateById({ id: it.id }, it);
         }),
-        patchGenTableUpdateById({ id: info.value!.id }, info.value ?? {})
+        patchGenTableUpdateById({ id: info.value!.id }, info.value ?? {}),
     ]);
     ElMessage.success('修改成功');
     // const validateResult = res.every(item => !!item);
