@@ -39,6 +39,7 @@ specifiers:
   vue: 3.2.38
   vue-cropper: 1.0.3
   vue-router: 4.1.5
+  vuedraggable: ^4.1.0
 
 dependencies:
   '@element-plus/icons-vue': 2.0.9_vue@3.2.38
@@ -57,6 +58,7 @@ dependencies:
   vue: 3.2.38
   vue-cropper: 1.0.3
   vue-router: 4.1.5_vue@3.2.38
+  vuedraggable: 4.1.0_vue@3.2.38
 
 devDependencies:
   '@types/file-saver': 2.0.5
@@ -73,7 +75,7 @@ devDependencies:
   eslint-plugin-vue: 9.4.0_eslint@8.23.0
   postcss: 8.4.16
   sass: 1.52.1
-  tailwindcss: 3.1.8_ts-node@10.9.1
+  tailwindcss: 3.1.8_57znarxsqwmnneadci5z5fd5gu
   ts-node: 10.9.1_r4hqq7vrw4pxsipnb7ha25ylfe
   tsconfig-paths: 4.1.0
   typescript: 4.8.2
@@ -2870,6 +2872,10 @@ packages:
       - supports-color
     dev: true
 
+  /sortablejs/1.14.0:
+    resolution: {integrity: sha512-pBXvQCs5/33fdN1/39pPL0NZF20LeRbLQ5jtnheIPN9JQAaufGjKdWduZn4U7wCtVuzKhmRkI0DFYHYRbB2H1w==}
+    dev: false
+
   /source-map-js/1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
     engines: {node: '>=0.10.0'}
@@ -3021,10 +3027,12 @@ packages:
       stable: 0.1.8
     dev: true
 
-  /tailwindcss/3.1.8_ts-node@10.9.1:
+  /tailwindcss/3.1.8_57znarxsqwmnneadci5z5fd5gu:
     resolution: {integrity: sha512-YSneUCZSFDYMwk+TGq8qYFdCA3yfBRdBlS7txSq0LUmzyeqRe3a8fBQzbz9M3WS/iFT4BNf/nmw9mEzrnSaC0g==}
     engines: {node: '>=12.13.0'}
     hasBin: true
+    peerDependencies:
+      postcss: ^8.0.9
     dependencies:
       arg: 5.0.2
       chokidar: 3.5.3
@@ -3433,6 +3441,15 @@ packages:
       '@vue/runtime-dom': 3.2.38
       '@vue/server-renderer': 3.2.38_vue@3.2.38
       '@vue/shared': 3.2.38
+
+  /vuedraggable/4.1.0_vue@3.2.38:
+    resolution: {integrity: sha512-FU5HCWBmsf20GpP3eudURW3WdWTKIbEIQxh9/8GE806hydR9qZqRRxRE3RjqX7PkuLuMQG/A7n3cfj9rCEchww==}
+    peerDependencies:
+      vue: ^3.0.1
+    dependencies:
+      sortablejs: 1.14.0
+      vue: 3.2.38
+    dev: false
 
   /webpack-sources/3.2.3:
     resolution: {integrity: sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==}

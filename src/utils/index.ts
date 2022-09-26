@@ -11,3 +11,12 @@ export function camelCase(str: string) {
 export function isNumberStr(str: string) {
     return /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g.test(str);
 }
+
+export function makeMap(str: string, expectsLowerCase?: any) {
+    const map = Object.create(null);
+    const list = str.split(',');
+    for (let i = 0; i < list.length; i++) {
+        map[list[i]] = true;
+    }
+    return expectsLowerCase ? (val: any) => map[val.toLowerCase()] : (val: any) => map[val];
+}

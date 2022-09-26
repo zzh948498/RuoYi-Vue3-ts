@@ -24,7 +24,8 @@
         "pinia": "2.0.22",
         "vue": "3.2.38",
         "vue-cropper": "1.0.3",
-        "vue-router": "4.1.5"
+        "vue-router": "4.1.5",
+        "vuedraggable": "^4.1.0"
     },
     "devDependencies": {
         "@types/file-saver": "^2.0.5",

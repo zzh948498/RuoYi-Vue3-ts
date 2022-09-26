@@ -54,7 +54,8 @@ import ImagePreview from '@/components/ImagePreview/index.vue';
 import TreeSelect from '@/components/TreeSelect/index.vue';
 // 字典标签组件
 import DictTag from '@/components/DictTag/index.vue';
-
+//element icon
+import * as ElIconModules from '@element-plus/icons-vue';
 const app = createApp(App);
 
 // 全局方法挂载
@@ -89,6 +90,11 @@ app.use(ElementPlus, {
     locale: locale,
     // 支持 large、default、small
     size: Cookies.get('size') || 'default',
+});
+
+// 注册全局组件
+Object.keys(ElIconModules).forEach(key => {
+    app.component(key, ElIconModules[key as keyof typeof ElIconModules]);
 });
 
 app.mount('#app');
