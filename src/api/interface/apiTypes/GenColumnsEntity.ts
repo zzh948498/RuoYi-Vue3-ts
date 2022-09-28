@@ -9,6 +9,10 @@ export interface GenColumnsEntity {
     desc: string;
     /** ts类型 */
     tsType: 'string' | 'number' | 'boolean' | 'Date';
+    /** 是否枚举类型 */
+    isEnum: boolean;
+    /** 枚举类型的值 */
+    enumValues?: string[];
     /** 插入 */
     isInsert: boolean;
     /** 编辑 */

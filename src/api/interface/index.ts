@@ -1,4 +1,5 @@
 export * from "./apiTypes/GenColumnsEntity";
+export * from "./apiTypes/GenTableRelationsEntity";
 export * from "./apiTypes/GenTableEntity";
 export * from "./apiTypes/GenColumnsCreateDto";
 export * from "./apiTypes/GenColumnsListWhereDto";
@@ -10,6 +11,10 @@ export * from "./apiTypes/GenTableListWhereDto";
 export * from "./apiTypes/GenTableListDto";
 export * from "./apiTypes/GenTableUpdateDto";
 export * from "./apiTypes/BodyIdsDto";
+export * from "./apiTypes/GenTableRelationsCreateDto";
+export * from "./apiTypes/GenTableRelationsListWhereDto";
+export * from "./apiTypes/GenTableRelationsListDto";
+export * from "./apiTypes/GenTableRelationsUpdateDto";
 export * from "./apiTypes/RDto";
 export * from "./apiTypes/RListDto";
 

@@ -12,11 +12,14 @@
                     <el-input v-model="info.desc" placeholder="请输入" />
                 </el-form-item>
             </el-col>
-            <!-- <el-col :span="12">
-                <el-form-item label="实体类名称" prop="className">
-                    <el-input v-model="info.className" placeholder="请输入" />
+            <el-col :span="12">
+                <el-form-item label="表类型" prop="tplCategory">
+                    <el-select v-model="info.tplCategory">
+                        <el-option label="单表（增删改查）" value="crud" />
+                        <el-option label="树表（增删改查）" value="tree" />
+                    </el-select>
                 </el-form-item>
-            </el-col> -->
+            </el-col>
             <!-- <el-col :span="12">
                 <el-form-item label="作者" prop="functionAuthor">
                     <el-input v-model="info.functionAuthor" placeholder="请输入" />
@@ -46,6 +49,7 @@ const basicInfoForm = ref<FormInstance>();
 const rules = ref({
     name: [{ required: true, message: '请输入表名称', trigger: 'blur' }],
     desc: [{ required: true, message: '请输入表描述', trigger: 'blur' }],
+    tplCategory: [{ required: true, message: '请选择表类型', trigger: 'blur' }],
     // className: [{ required: true, message: '请输入实体类名称', trigger: 'blur' }],
     // functionAuthor: [{ required: true, message: '请输入作者', trigger: 'blur' }],
 });

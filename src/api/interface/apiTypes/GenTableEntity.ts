@@ -1,4 +1,4 @@
-import { GenColumnsEntity } from "../../interface";
+import { GenColumnsEntity, GenTableRelationsEntity } from "../../interface";
 
 export interface GenTableEntity {
     /** id */
@@ -15,12 +15,8 @@ export interface GenTableEntity {
     updatedAt: string;
     /** 字段 */
     columns: GenColumnsEntity[];
+    /** 关系 */
+    relations: GenTableRelationsEntity[];
     /** 生成模板类型 */
-    tplCategory: 'crud' | 'tree' | 'sub';
-    /** 子表名称 */
-    subTableName?: string;
-    /** 子表关系类型 */
-    relations?: 'OneToOne' | 'ManyToOne' | 'OneToMany' | 'ManyToMany';
-    /** 子表关联的外键名 */
-    subTableFkName?: string;
+    tplCategory: 'crud' | 'tree';
 }

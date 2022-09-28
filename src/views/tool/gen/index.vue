@@ -50,7 +50,7 @@
                     type="primary"
                     plain
                     icon="Download"
-                    @click="handleGenTable"
+                    @click="handleGenTable()"
                     >生成</el-button
                 >
             </el-col>
@@ -264,7 +264,7 @@ const form = ref<GenTableCreateDto>({
 const rules = ref({
     name: [
         { required: true, message: '表名称不能为空', trigger: 'blur' },
-        { min: 2, max: 20, message: '表名称长度必须介于 2 和 20 之间', trigger: 'blur' },
+        { min: 2, max: 80, message: '表名称长度必须介于 2 和 80 之间', trigger: 'blur' },
     ],
     desc: [{ required: true, message: '表描述不能为空', trigger: 'blur' }],
 });
@@ -328,9 +328,13 @@ function handleQuery() {
     getList();
 }
 /** 生成代码操作 */
-async function handleGenTable(row: GenTableEntity) {
+async function handleGenTable(row?: GenTableEntity) {
+    const ids = row?.id ? [row.id] : tableNames.value;
+    if (ids.length === 0) {
+        return ElMessage.error('请选中一条数据');
+    }
     const { data } = await postGenCode({
-        ids: [row.id],
+        ids: ids,
     });
     const arraybuffer = new Int8Array(data.data);
     // 再输入到 Blob 生成文件
@@ -392,7 +396,7 @@ function copyTextSuccess() {
 // 多选框选中数据
 function handleSelectionChange(selection: any[]) {
     ids.value = selection.map(item => item.id);
-    tableNames.value = selection.map(item => item.name);
+    tableNames.value = selection.map(item => item.id);
     single.value = selection.length !== 1;
     multiple.value = !selection.length;
 }

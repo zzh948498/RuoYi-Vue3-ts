@@ -44,12 +44,29 @@
                         </el-table-column>
                         <el-table-column label="ts类型" min-width="11%">
                             <template #default="scope">
-                                <el-select v-model="scope.row.tsType">
-                                    <el-option label="string" value="string" />
-                                    <el-option label="number" value="number" />
-                                    <el-option label="boolean" value="boolean" />
-                                    <el-option label="Date" value="Date" />
+                                <div>
+                                    <el-select v-model="scope.row.tsType">
+                                        <el-option label="string" value="string" />
+                                        <el-option label="number" value="number" />
+                                        <el-option label="boolean" value="boolean" />
+                                        <el-option label="Date" value="Date" />
+                                    </el-select>
+                                </div>
+                                <el-select
+                                    v-show="scope.row.isEnum"
+                                    v-model="scope.row.enumValues"
+                                    multiple
+                                    filterable
+                                    allow-create
+                                    default-first-option
+                                    placeholder="填写你的类型"
+                                >
                                 </el-select>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="枚举类型" min-width="5%">
+                            <template #default="scope">
+                                <el-checkbox v-model="scope.row.isEnum"></el-checkbox>
                             </template>
                         </el-table-column>
                         <el-table-column label="插入" min-width="5%">
@@ -149,8 +166,8 @@
                     </el-table>
                 </el-form>
             </el-tab-pane>
-            <el-tab-pane label="生成信息" name="genInfo">
-                <gen-info-form ref="genFormInstance" :info="info" :tables="tables" />
+            <el-tab-pane label="关系信息" name="genInfo">
+                <gen-info-form ref="genFormInstance" :info="info" :tables="tables" @getAllList="getList" />
             </el-tab-pane>
         </el-tabs>
         <el-form label-width="100px">
@@ -170,7 +187,7 @@ import { ref } from 'vue';
 import { RouteLocationRaw, useRoute } from 'vue-router';
 import { oneOf, PartialByKeys } from '@zeronejs/utils';
 import { getGenTableAll } from '@/api/controller/genTable/getGenTableAll';
-import { GenColumnsEntity, GenTableEntity } from '@/api/interface';
+import { GenColumnsEntity, GenTableEntity, GenTableRelationsEntity } from '@/api/interface';
 import { ElMessage, FormInstance } from 'element-plus';
 import { ElModalConfirm } from '@/plugins/ElModal';
 import tab from '@/plugins/tab';
@@ -179,6 +196,8 @@ import { deleteGenColumnsRemoveById } from '@/api/controller/genColumns/deleteGe
 import { getGenTableDetailsById } from '@/api/controller/genTable/getGenTableDetailsById';
 import { patchGenColumnsUpdateById } from '@/api/controller/genColumns/patchGenColumnsUpdateById';
 import { postGenColumnsCreate } from '@/api/controller/genColumns/postGenColumnsCreate';
+import { patchGenTableRelationsUpdateById } from '@/api/controller/genTableRelations/patchGenTableRelationsUpdateById';
+import { postGenTableRelationsCreate } from '@/api/controller/genTableRelations/postGenTableRelationsCreate';
 
 const route = useRoute();
 type ColumnsListItem = PartialByKeys<GenColumnsEntity, 'id' | 'createdAt' | 'updatedAt' | 'table'>;
@@ -193,6 +212,7 @@ const columnsForm = ref<{
 }>({
     columns: [],
 });
+
 const dictOptions = ref<any[]>([]);
 const info = ref<GenTableEntity>();
 const basicFormInstance = ref<InstanceType<typeof basicInfoForm>>();
@@ -208,6 +228,7 @@ const rules = ref({
         },
     ],
 });
+const submiting = ref(false);
 const addColumns = () => {
     columnsForm.value.columns.push({
         name: 'string',
@@ -215,6 +236,7 @@ const addColumns = () => {
         desc: '',
         /** ts类型 */
         tsType: 'string',
+        isEnum: false,
         /** 插入 */
         isInsert: true,
         /** 编辑 */
@@ -234,16 +256,24 @@ async function submitForm() {
     const basicForm = basicFormInstance.value?.basicInfoForm;
     const genInfoForm = genFormInstance.value?.genInfoForm;
     // const genForm = genFormInstance.value?.$refs.genInfoForm as Ref<FormInstance>;
+    if (submiting.value) {
+        return;
+    }
+    submiting.value = true;
     const [basicCheck, columnsCheck, genInfoCheck] = await Promise.all(
         [basicForm!, columnsFormRef.value!, genInfoForm!].map(getFormPromise)
     );
     if (!basicCheck) {
+        submiting.value = false;
         return ElMessage.error('基本信息校验未通过，请重新检查提交内容');
     } else if (!columnsCheck) {
+        submiting.value = false;
         return ElMessage.error('字段校验未通过，请重新检查提交内容');
     } else if (!genInfoCheck) {
-        return ElMessage.error('生成信息校验未通过，请重新检查提交内容');
+        submiting.value = false;
+        return ElMessage.error('关系信息校验未通过，请重新检查提交内容');
     }
+
     await Promise.all([
         ...columnsForm.value.columns.map(it => {
             if (!it.id) {
@@ -252,23 +282,16 @@ async function submitForm() {
             return patchGenColumnsUpdateById({ id: it.id }, it);
         }),
         patchGenTableUpdateById({ id: info.value!.id }, info.value ?? {}),
+        ...(genFormInstance.value?.relationsForm.relations.map(it => {
+            if (!it.id) {
+                return postGenTableRelationsCreate(it);
+            }
+            return patchGenTableRelationsUpdateById({ id: it.id }, it);
+        }) ?? []),
     ]);
-    ElMessage.success('修改成功');
-    // const validateResult = res.every(item => !!item);
-    // const genTable = Object.assign({}, info.value);
-    // genTable.columns = columns.value;
-    // genTable.params = {
-    //     treeCode: info.value.treeCode,
-    //     treeName: info.value.treeName,
-    //     treeParentCode: info.value.treeParentCode,
-    //     parentMenuId: info.value.parentMenuId,
-    // };
-    // updateGenTable(genTable).then((res: any) => {
-    // ElMessage.success(res.msg);
-    //     if (res.code === 200) {
-    //         close();
-    //     }
-    // });
+    ElMessage.success('操作成功');
+    await getList();
+    submiting.value = false;
 }
 function getFormPromise(form: FormInstance) {
     return new Promise(resolve => {
@@ -318,6 +341,7 @@ const getList = async () => {
         tables.value = tableAll.data.data;
         info.value = tableInfo.data.data;
         columnsForm.value.columns = tableInfo.data.data.columns;
+        genFormInstance.value?.getList(tableInfo.data.data.relations);
         /** 查询字典下拉列表 */
         getDictOptionselect().then(response => {
             dictOptions.value = response.data;
