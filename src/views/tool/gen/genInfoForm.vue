@@ -60,11 +60,12 @@
                     <el-form-item :prop="'relations.' + index + '.subTableFkName'">
                         <template #label>
                             子表关联的外键名
-                            <el-tooltip content="子表关联的外键名， 如：userId" placement="top">
+                            <el-tooltip content="子表关联的外键名， 如：id" placement="top">
                                 <el-icon><question-filled /></el-icon>
                             </el-tooltip>
                         </template>
-                        <el-select v-model="relation.subTableFkName" placeholder="请选择">
+                        <div>{{ relation.subTableFkName }}</div>
+                        <!-- <el-select v-model="relation.subTableFkName" placeholder="请选择">
                             <el-option :label="'id' + '：' + 'id'" value="id"></el-option>
                             <el-option
                                 v-for="(column, index) in tables[
@@ -74,7 +75,7 @@
                                 :label="column.name + '：' + column.desc"
                                 :value="column.name"
                             ></el-option>
-                        </el-select>
+                        </el-select> -->
                     </el-form-item>
                 </el-col>
                 <el-col :span="24">
@@ -134,10 +135,10 @@ const addRelations = () => {
     relationsForm.value.relations.push({
         subTableName: '',
         type: 'OneToOne',
-        subTableFkName: '',
+        subTableFkName: 'id',
         tableId: props.info.id ?? 0,
         relationColumn: '',
-        targetColumn: '',
+        targetColumn: lowerFirst(props.info.name ?? '').replace(/Entity$/, ''),
     });
 };
 
