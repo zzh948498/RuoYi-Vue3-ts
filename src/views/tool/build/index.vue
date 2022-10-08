@@ -87,19 +87,19 @@
         <!-- 中间列表 -->
         <div class="h-[100vh] flex-1">
             <div class="px-[15px] h-[42px] flex justify-end items-center border-r border-b border-[#f1e8e8]">
-                <el-button type="text" class="text-[20px]">
+                <el-button :text="true" class="text-[20px]">
                     <el-icon class="text-[20px] align-middle" style="vertical-align: middle">
                         <download />
                     </el-icon>
                     <span class="align-middle text-[14px]"> 导出vue文件 </span>
                 </el-button>
-                <el-button type="text" class="text-[20px]">
+                <el-button :text="true" class="text-[20px]">
                     <el-icon class="align-middle">
                         <documentCopy />
                     </el-icon>
                     <span class="align-middle text-[14px]"> 复制代码 </span>
                 </el-button>
-                <el-button type="text" class="text-[#f56c6c] text-[20px]">
+                <el-button :text="true" class="text-[#f56c6c] text-[20px]">
                     <el-icon class="align-middle" style="vertical-align: middle">
                         <delete />
                     </el-icon>
@@ -109,17 +109,26 @@
             <el-scrollbar class="h-[calc(100vh-42px)] overflow-hidden border-l border-r border-[#f1e8e8]">
                 <el-row class="px-[12px] pt-[12px] pb-[15px]" :gutter="formConf.gutter">
                     <el-form
-                        class="h-[calc(100vh-42px)] w-full"
+                        class="h-[calc(100vh-69px)] w-full"
                         :size="formConf.size"
                         :label-position="formConf.labelPosition"
                         :disabled="formConf.disabled"
                         :label-width="formConf.labelWidth + 'px'"
                     >
-                        <draggable v-model="drawingList"  :group="{ name: 'people', pull: ''}" item-key="tag">
-                            <template #item="{ element }">
-                                <div>
-                                    {{ element.tag }}
-                                </div>
+                        <draggable
+                            v-model="drawingList"
+                            :group="{ name: 'people', pull: '' }"
+                            item-key="tag"
+                            @change="log"
+                        >
+                            <template #item="{ element, index }">
+                                <Test
+                                    :drawing-list="drawingList"
+                                    :element="element"
+                                    :index="index"
+                                    :active-id="activeId"
+                                    :form-conf="formConf"
+                                ></Test>
                             </template>
                         </draggable>
                         <div
@@ -141,6 +150,14 @@ import draggable from 'vuedraggable';
 import { inputComponents, selectComponents, layoutComponents, formConf } from '@/utils/generator/config';
 import drawingDefault from '@/utils/generator/drawingDefault';
 import { ref } from 'vue';
+import TagsView from '@/layout/components/TagsView/index.vue';
+import Test from './test.vue';
 const drag = ref(false);
 const drawingList = ref<any[]>(drawingDefault);
+const log = (evt: any) => {
+    window.console.log(evt);
+};
+const activeId = ref(drawingDefault[0].formId);
+// const lsit = [];
+// lsit.push(<div>sfsdf</div>);
 </script>

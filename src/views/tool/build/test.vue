@@ -1,57 +1,72 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import draggable from 'vuedraggable';
-const list1 = ref([
-    { name: 'dog 1', id: 1 },
-    { name: 'dog 2', id: 2 },
-    { name: 'dog 3', id: 3 },
-    { name: 'dog 4', id: 4 },
-]);
-const list2 = ref([
-    { name: 'cat 5', id: 5 },
-    { name: 'cat 6', id: 6 },
-    { name: 'cat 7', id: 7 },
-]);
-const log = (evt: any) => {
-    window.console.log(evt);
-};
-const cloneDog = ({ id }: { id: number }) => {
-    return {
-        id: idGlobal++,
-        name: `cat ${id}`,
-    };
-};
-const drag = ref(false);
-const dragOptions = () => {
-    return {
-        animation: 200,
-        group: 'description',
-        disabled: false,
-        ghostClass: 'ghost',
-    };
-};
-const message = ['vue.draggable', 'draggable', 'component', 'for', 'vue.js 2.0', 'based', 'on', 'Sortablejs'];
-const list = ref(
-    message.map((name, index) => {
-        return { name, order: index + 1 };
-    })
+import { makeMap } from '@/utils';
+import { h, ref } from 'vue';
+const props = defineProps({
+    element: {
+        type: Object,
+        required: true,
+    },
+    index: {
+        type: Number,
+        required: true,
+    },
+    drawingList: {
+        type: Array,
+        required: true,
+    },
+    activeId: {
+        type: Number,
+        required: true,
+    },
+    formConf: {
+        type: Object,
+        required: true,
+    },
+});
+
+const isAttr = makeMap(
+    'accept,accept-charset,accesskey,action,align,alt,async,autocomplete,' +
+        'autofocus,autoplay,autosave,bgcolor,border,buffered,challenge,charset,' +
+        'checked,cite,class,code,codebase,color,cols,colspan,content,http-equiv,' +
+        'name,contenteditable,contextmenu,controls,coords,data,datetime,default,' +
+        'defer,dir,dirname,disabled,download,draggable,dropzone,enctype,method,for,' +
+        'form,formaction,headers,height,hidden,high,href,hreflang,http-equiv,' +
+        'icon,id,ismap,itemprop,keytype,kind,label,lang,language,list,loop,low,' +
+        'manifest,max,maxlength,media,method,GET,POST,min,multiple,email,file,' +
+        'muted,name,novalidate,open,optimum,pattern,ping,placeholder,poster,' +
+        'preload,radiogroup,readonly,rel,required,reversed,rows,rowspan,sandbox,' +
+        'scope,scoped,seamless,selected,shape,size,type,text,password,sizes,span,' +
+        'spellcheck,src,srcdoc,srclang,srcset,start,step,style,summary,tabindex,' +
+        'target,title,type,usemap,value,width,wrap'
 );
-let idGlobal = 8;
+
+const render = () => {
+    const dataObject: Record<string, any> = {
+        attrs: {},
+        props: {},
+        on: {},
+        style: {},
+    };
+    const confClone = JSON.parse(JSON.stringify(props.element));
+    const children: any[] = [];
+    Object.keys(confClone).forEach(key => {
+        const val = confClone[key];
+        if (dataObject.hasOwnProperty(key)) {
+            dataObject[key] = val;
+        } else if (!isAttr(key)) {
+            dataObject.props[key] = val;
+        } else {
+            dataObject.attrs[key] = val;
+        }
+    });
+    return h(props.element.tag, dataObject, children);
+};
 </script>
 <template>
-    <div class="flex">
-        <div>
-            <h3>Transition</h3>
-            <draggable v-model="list" item-key="order" @start="drag = true" @end="drag = false">
-                <template #item="{ element }">
-                    <li calss="grid grid-cols-2 gap-2 mt-[15px]">
-                        <i @click="element.fixed = !element.fixed"></i>
-                        {{ element.name }}
-                    </li>
-                </template>
-            </draggable>
-        </div>
+    <el-col>
+    <el-form-item>
+      
 
-        <rawDisplayer class="col-3" :value="list" title="List" />
-    </div>
+    </el-form-item>
+    </el-col>
 </template>

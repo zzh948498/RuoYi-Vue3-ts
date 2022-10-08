@@ -1,7 +1,7 @@
 export const formConf = {
     formRef: 'elForm',
     formModel: 'formData',
-    size: 'medium',
+    size: 'default',
     labelPosition: 'right',
     labelWidth: 100,
     formRules: 'rules',
