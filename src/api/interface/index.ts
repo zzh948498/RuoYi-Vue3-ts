@@ -15,6 +15,16 @@ export * from "./apiTypes/GenTableRelationsCreateDto";
 export * from "./apiTypes/GenTableRelationsListWhereDto";
 export * from "./apiTypes/GenTableRelationsListDto";
 export * from "./apiTypes/GenTableRelationsUpdateDto";
+export * from "./apiTypes/DictEntity";
+export * from "./apiTypes/DictDataEntity";
+export * from "./apiTypes/DictCreateDto";
+export * from "./apiTypes/DictListWhereDto";
+export * from "./apiTypes/DictListDto";
+export * from "./apiTypes/DictUpdateDto";
+export * from "./apiTypes/DictDataCreateDto";
+export * from "./apiTypes/DictDataListWhereDto";
+export * from "./apiTypes/DictDataListDto";
+export * from "./apiTypes/DictDataUpdateDto";
 export * from "./apiTypes/RDto";
 export * from "./apiTypes/RListDto";
 
