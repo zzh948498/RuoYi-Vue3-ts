@@ -7,4 +7,8 @@ export interface DictListWhereDto {
     remark?: string;
     /** 字典类型 */
     type?: string;
+    /** 开始时间 */
+    beginTime?: string;
+    /** 结束时间 */
+    endTime?: string;
 }

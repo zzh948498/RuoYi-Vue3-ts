@@ -11,7 +11,7 @@ export interface DictDataEntity {
     isDefault?: boolean;
     /** 字典键值 */
     value: string;
-    /** 状态（0正常 1停用） */
+    /** 状态 */
     status?: 'Normal' | 'Disable';
     /** 备注 */
     remark?: string;

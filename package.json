@@ -13,6 +13,7 @@
         "@vueuse/core": "9.2.0",
         "@zeronejs/utils": "^1.4.1",
         "axios": "0.27.2",
+        "date-fns": "^2.29.3",
         "echarts": "5.3.3",
         "element-plus": "2.2.16",
         "file-saver": "2.0.5",

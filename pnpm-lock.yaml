@@ -14,6 +14,7 @@ specifiers:
   '@zeronejs/utils': ^1.4.1
   autoprefixer: ^10.4.8
   axios: 0.27.2
+  date-fns: ^2.29.3
   echarts: 5.3.3
   element-plus: 2.2.16
   eslint: ^8.22.0
@@ -45,6 +46,7 @@ dependencies:
   '@vueuse/core': 9.2.0_vue@3.2.38
   '@zeronejs/utils': 1.4.1
   axios: 0.27.2
+  date-fns: 2.29.3
   echarts: 5.3.3
   element-plus: 2.2.16_vue@3.2.38
   file-saver: 2.0.5
@@ -73,7 +75,7 @@ devDependencies:
   eslint-plugin-vue: 9.4.0_eslint@8.23.0
   postcss: 8.4.16
   sass: 1.52.1
-  tailwindcss: 3.1.8_ts-node@10.9.1
+  tailwindcss: 3.1.8_57znarxsqwmnneadci5z5fd5gu
   ts-node: 10.9.1_r4hqq7vrw4pxsipnb7ha25ylfe
   tsconfig-paths: 4.1.0
   typescript: 4.8.2
@@ -963,6 +965,11 @@ packages:
 
   /csstype/2.6.20:
     resolution: {integrity: sha512-/WwNkdXfckNgw6S5R125rrW8ez139lBHWouiBvX8dfMFtcn6V81REDqnH7+CRpRipfYlyU1CmOnOxrmGcFOjeA==}
+
+  /date-fns/2.29.3:
+    resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
+    engines: {node: '>=0.11'}
+    dev: false
 
   /dayjs/1.11.5:
     resolution: {integrity: sha512-CAdX5Q3YW3Gclyo5Vpqkgpj8fSdLQcRuzfX6mC6Phy0nfJ0eGYOeS7m4mt2plDWLAtA4TqTakvbboHvUxfe4iA==}
@@ -3021,10 +3028,12 @@ packages:
       stable: 0.1.8
     dev: true
 
-  /tailwindcss/3.1.8_ts-node@10.9.1:
+  /tailwindcss/3.1.8_57znarxsqwmnneadci5z5fd5gu:
     resolution: {integrity: sha512-YSneUCZSFDYMwk+TGq8qYFdCA3yfBRdBlS7txSq0LUmzyeqRe3a8fBQzbz9M3WS/iFT4BNf/nmw9mEzrnSaC0g==}
     engines: {node: '>=12.13.0'}
     hasBin: true
+    peerDependencies:
+      postcss: ^8.0.9
     dependencies:
       arg: 5.0.2
       chokidar: 3.5.3
