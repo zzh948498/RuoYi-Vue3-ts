@@ -148,7 +148,7 @@
                                         v-click-outside="hideSelectIcon"
                                         placeholder="点击选择图标"
                                         readonly
-                                        @click="showSelectIcon"
+                                        @blur="showSelectIcon"
                                     >
                                         <template #prefix>
                                             <svg-icon
