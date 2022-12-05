@@ -224,7 +224,11 @@
                     </el-col>
                     <el-col :span="24">
                         <el-form-item label="cron表达式" prop="cronExpression">
-                            <el-input v-model="form.cronExpression" placeholder="请输入cron执行表达式">
+                            <el-input
+                                v-model="form.cronExpression"
+                                placeholder="请输入cron执行表达式"
+                                readonly
+                            >
                                 <template #append>
                                     <el-button type="primary" @click="handleShowCron">
                                         生成表达式
@@ -272,7 +276,14 @@
                 </div>
             </template>
         </el-dialog>
-
+        <el-dialog v-model="openCron" title="Cron表达式生成器" append-to-body destroy-on-close>
+            <crontab
+                ref="crontabRef"
+                :expression="expression"
+                @hide="openCron = false"
+                @fill="crontabFill"
+            ></crontab>
+        </el-dialog>
         <!-- 任务日志详细 -->
         <el-dialog v-model="openView" title="任务详细" width="700px" append-to-body>
             <el-form :model="form" label-width="120px">
@@ -333,7 +344,7 @@ import { listJob, getJob, delJob, addJob, updateJob, runJob, changeJobStatus } f
 import { parseTime } from '@/utils/ruoyi';
 import { getCurrentInstance, ComponentInternalInstance, ref, reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
-
+import Crontab from '@/components/Crontab/index.vue';
 const router = useRouter();
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const { sys_job_group, sys_job_status } = proxy!.useDict('sys_job_group', 'sys_job_status');
@@ -367,7 +378,7 @@ const data = reactive<{
     rules: {
         jobName: [{ required: true, message: '任务名称不能为空', trigger: 'blur' }],
         invokeTarget: [{ required: true, message: '调用目标字符串不能为空', trigger: 'blur' }],
-        cronExpression: [{ required: true, message: 'cron执行表达式不能为空', trigger: 'blur' }],
+        cronExpression: [{ required: true, message: 'cron执行表达式不能为空', trigger: 'change' }],
     },
 });
 
