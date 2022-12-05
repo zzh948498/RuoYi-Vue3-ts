@@ -149,7 +149,7 @@ service.interceptors.response.use(
 );
 
 // 通用下载方法
-export function download(url: string, params: any, filename: string) {
+export function download(url: string, params: any, filename: string, config: any = {}) {
     downloadLoadingInstance = ElLoading.service({
         text: '正在下载数据，请稍候',
         background: 'rgba(0, 0, 0, 0.7)',
@@ -163,6 +163,7 @@ export function download(url: string, params: any, filename: string) {
             ],
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             responseType: 'blob',
+            ...config,
         })
         .then(async (data: any) => {
             const isLogin = await blobValidate(data);
