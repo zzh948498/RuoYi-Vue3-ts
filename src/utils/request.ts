@@ -114,6 +114,12 @@ service.interceptors.response.use(
                 type: 'error',
             });
             return Promise.reject(new Error(msg));
+        } else if (code === 601) {
+            ElMessage({
+                message: msg,
+                type: 'warning',
+            });
+            return Promise.reject(new Error(msg));
         } else if (code !== 200) {
             ElNotification.error({
                 title: msg,
