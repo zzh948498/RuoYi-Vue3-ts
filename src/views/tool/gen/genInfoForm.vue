@@ -233,7 +233,7 @@ import { listMenu } from '@/api/system/menu';
 import { ref, getCurrentInstance, ComponentInternalInstance, watch } from 'vue';
 
 const subColumns = ref<any[]>([]);
-const menuOptions = ref({});
+const menuOptions = ref([]);
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 
 const props = defineProps({
