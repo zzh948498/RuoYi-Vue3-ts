@@ -227,7 +227,6 @@
                             <el-input
                                 v-model="form.cronExpression"
                                 placeholder="请输入cron执行表达式"
-                                readonly
                             >
                                 <template #append>
                                     <el-button type="primary" @click="handleShowCron">
