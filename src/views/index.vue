@@ -822,7 +822,7 @@
 <script setup name="Index" lang="ts">
 import { ref } from 'vue';
 
-const version = ref('3.8.3');
+const version = ref('3.8.4');
 
 function goTarget(url: string) {
     window.open(url, '__blank');
