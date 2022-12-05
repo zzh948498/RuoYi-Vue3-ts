@@ -94,8 +94,11 @@ export function selectDictLabel(datas: any, value: any) {
 
 // 回显数据字典（字符串数组）
 export function selectDictLabels(datas: any, value: any, separator: any) {
-    if (value === undefined) {
+    if (value === undefined || value.length === 0) {
         return '';
+    }
+    if (Array.isArray(value)) {
+        value = value.join(',');
     }
     const actions: any[] = [];
     const currentSeparator = undefined === separator ? ',' : separator;
