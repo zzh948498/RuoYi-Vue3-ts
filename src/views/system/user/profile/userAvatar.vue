@@ -22,6 +22,7 @@
                         :autoCropWidth="options.autoCropWidth"
                         :autoCropHeight="options.autoCropHeight"
                         :fixedBox="options.fixedBox"
+                        :outputType="options.outputType"
                         @realTime="realTime"
                     />
                 </el-col>
@@ -87,6 +88,7 @@ const options = reactive<{
     autoCropWidth: number; // 默认生成截图框宽度
     autoCropHeight: number; // 默认生成截图框高度
     fixedBox: boolean; // 固定截图框大小 不允许改变
+    outputType: string; // 默认生成截图为PNG格式
     previews: any; //预览数据
     visible: boolean;
 }>({
@@ -95,6 +97,7 @@ const options = reactive<{
     autoCropWidth: 200, // 默认生成截图框宽度
     autoCropHeight: 200, // 默认生成截图框高度
     fixedBox: true, // 固定截图框大小 不允许改变
+    outputType: 'png', // 默认生成截图为PNG格式
     previews: {}, //预览数据
     visible: false,
 });
