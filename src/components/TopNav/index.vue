@@ -1,5 +1,5 @@
 <template>
-    <el-menu :default-active="activeMenu" mode="horizontal" @select="handleSelect">
+    <el-menu :default-active="activeMenu" mode="horizontal" :ellipsis="false" @select="handleSelect">
         <template v-for="(item, index) in topMenus">
             <el-menu-item
                 v-if="index < Number(visibleNumber)"
