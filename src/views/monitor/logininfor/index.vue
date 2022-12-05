@@ -197,8 +197,8 @@ function handleQuery() {
 function resetQuery() {
     dateRange.value = [];
     proxy!.resetForm('queryRef');
+    queryParams.value.pageNum = 1;
     (proxy!.$refs['logininforRef'] as any).sort(defaultSort.value.prop, defaultSort.value.order);
-    handleQuery();
 }
 /** 多选框选中数据 */
 function handleSelectionChange(selection: any[]) {
