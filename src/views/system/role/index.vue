@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-        <el-form v-show="showSearch" ref="queryRef" :model="queryParams" :inline="true">
+        <el-form v-show="showSearch" ref="queryRef" :model="queryParams" :inline="true" label-width="68px">
             <el-form-item label="角色名称" prop="roleName">
                 <el-input
                     v-model="queryParams.roleName"
