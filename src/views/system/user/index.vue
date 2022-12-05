@@ -19,6 +19,7 @@
                         :props="{ label: 'label', children: 'children' }"
                         :expand-on-click-node="false"
                         :filter-node-method="filterNode"
+                        node-key="id"
                         highlight-current
                         default-expand-all
                         @nodeClick="handleNodeClick"
@@ -449,12 +450,13 @@ import {
 import { parseTime } from '@/utils/ruoyi';
 import { getCurrentInstance, ComponentInternalInstance, ref, reactive, toRefs, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { ElTree } from 'element-plus';
 
 const router = useRouter();
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 
 const { sys_normal_disable, sys_user_sex } = proxy!.useDict('sys_normal_disable', 'sys_user_sex');
-
+const deptTreeRef = ref<InstanceType<typeof ElTree>>()
 const userList = ref<any[]>([]);
 const open = ref(false);
 const loading = ref(true);
@@ -567,6 +569,8 @@ function handleQuery() {
 function resetQuery() {
     dateRange.value = [];
     proxy!.resetForm('queryRef');
+    queryParams.value.deptId = undefined;
+    deptTreeRef.value?.setCurrentKey(null as any)
     handleQuery();
 }
 /** 删除按钮操作 */
