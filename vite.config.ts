@@ -16,7 +16,8 @@ export default defineConfig(({ mode, command }) => {
                 resolvers: [ElementPlusResolver()],
             }),
             Components({
-                dts: true, // enabled by default if `typescript` is installed
+                // dts: true, // enabled by default if `typescript` is installed
+                dts: "src/components.d.ts",
                 resolvers: [ElementPlusResolver()],
             }),
             // 添加下面插件
