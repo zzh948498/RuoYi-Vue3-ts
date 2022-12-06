@@ -16,8 +16,9 @@ export default defineConfig(({ mode, command }) => {
                 resolvers: [ElementPlusResolver()],
             }),
             Components({
-                dts: true, // enabled by default if `typescript` is installed
+                // dts: true, // enabled by default if `typescript` is installed
                 resolvers: [ElementPlusResolver()],
+                dts: "src/components.d.ts",
             }),
             // 添加下面插件
             createSvgIconsPlugin({
