@@ -21,6 +21,7 @@ export function getGenColumnsAll(params: GetGenColumnsAllParams) {
         isList: params.isList,
         isQuery: params.isQuery,
         required: params.required,
+        htmlType: params.htmlType,
         tableId: params.tableId,
     };
     return request.get<DeepRequired<GetGenColumnsAllResult>>(`/genColumns/all`, {
@@ -49,6 +50,8 @@ interface GetGenColumnsAllParams {
     isQuery?: boolean;
     /** 必填 */
     required?: boolean;
+    /** html类型 */
+    htmlType?: 'input' | 'textarea' | 'select' | 'radio' | 'checkbox' | 'datetime' | 'imageUpload' | 'fileUpload' | 'editor';
     /** 表id */
     tableId?: number;
 }

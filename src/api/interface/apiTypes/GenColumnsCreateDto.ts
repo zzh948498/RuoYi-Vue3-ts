@@ -19,6 +19,8 @@ export interface GenColumnsCreateDto {
     isQuery: boolean;
     /** 必填 */
     required: boolean;
+    /** html类型 */
+    htmlType: 'input' | 'textarea' | 'select' | 'radio' | 'checkbox' | 'datetime' | 'imageUpload' | 'fileUpload' | 'editor';
     /** 表id */
     tableId: number;
 }

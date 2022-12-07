@@ -23,6 +23,8 @@ export interface GenColumnsEntity {
     isQuery: boolean;
     /** 必填 */
     required: boolean;
+    /** html类型 */
+    htmlType: 'input' | 'textarea' | 'select' | 'radio' | 'checkbox' | 'datetime' | 'imageUpload' | 'fileUpload' | 'editor';
     /** 创建时间 */
     createdAt: string;
     /** 修改时间 */
