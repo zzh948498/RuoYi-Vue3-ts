@@ -41,7 +41,7 @@ export default defineConfig(({ mode, command }) => {
                     rewrite: p => p.replace(/^\/dev-api/, ''),
                 },
                 '/dev2-api': {
-                    target: 'http://localhost:5000',
+                    target: 'http://127.0.0.1:5000',
                     changeOrigin: true,
                     rewrite: p => p.replace(/^\/dev2-api/, ''),
                 },

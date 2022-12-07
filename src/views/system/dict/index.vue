@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-        <el-form v-show="showSearch" ref="queryRef" :model="queryParams" :inline="true" label-width="68px">
+        <el-form v-show="showSearch" ref="queryRef" :model="queryParams" :inline="true">
             <el-form-item label="字典名称" prop="title">
                 <el-input
                     v-model="queryParams.title"
@@ -19,16 +19,16 @@
                     @keyup.enter="handleQuery"
                 />
             </el-form-item>
-            <!-- <el-form-item label="状态" prop="status">
+            <el-form-item label="状态" prop="status">
                 <el-select v-model="queryParams.status" placeholder="字典状态" clearable style="width: 240px">
                     <el-option
-                        v-for="dict in sys_normal_disable"
+                        v-for="dict in statusGroup"
                         :key="dict.value"
                         :label="dict.label"
                         :value="dict.value"
                     />
                 </el-select>
-            </el-form-item> -->
+            </el-form-item>
             <el-form-item label="创建时间" style="width: 308px">
                 <el-date-picker
                     v-model="dateRange"
@@ -62,7 +62,7 @@
                     plain
                     icon="Edit"
                     :disabled="single"
-                    @click="handleUpdate"
+                    @click="handleUpdate()"
                     >修改</el-button
                 >
             </el-col>
@@ -73,7 +73,7 @@
                     plain
                     icon="Delete"
                     :disabled="multiple"
-                    @click="handleDelete"
+                    @click="handleDelete()"
                     >删除</el-button
                 >
             </el-col>
@@ -101,16 +101,20 @@
                     </router-link>
                 </template>
             </el-table-column>
-            <!-- <el-table-column label="状态" align="center" prop="status">
+            <el-table-column label="状态" align="center" prop="status">
                 <template #default="scope">
-                    <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
+                    <template v-for="item in statusGroup">
+                        <template v-if="scope.row.status === item.value">
+                            <el-tag :key="item.value">{{ item.label }}</el-tag>
+                        </template>
+                    </template>
                 </template>
-            </el-table-column> -->
+            </el-table-column>
             <el-table-column label="状态" align="center" prop="status" :show-overflow-tooltip="true" />
             <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
             <el-table-column label="创建时间" align="center" prop="createdAt" width="180">
                 <template #default="scope">
-                    <span>{{ parseTime(scope.row.createdAt) }}</span>
+                    <span>{{ dateFormat(scope.row.createdAt) }}</span>
                 </template>
             </el-table-column>
             <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -144,23 +148,23 @@
         />
 
         <!-- 添加或修改参数配置对话框 -->
-        <el-dialog v-model="open" :title="title" width="500px" append-to-body>
-            <el-form ref="dictRef" :model="form" :rules="rules" label-width="80px">
+        <el-dialog v-model="open" :title="dialogTitle" width="500px" append-to-body>
+            <el-form ref="dictRef" :model="editForm" :rules="rules" label-width="80px">
                 <el-form-item label="字典名称" prop="title">
-                    <el-input v-model="form.title" placeholder="请输入字典名称" />
+                    <el-input v-model="editForm.title" placeholder="请输入字典名称" />
                 </el-form-item>
                 <el-form-item label="字典类型" prop="type">
-                    <el-input v-model="form.type" placeholder="请输入字典类型" />
+                    <el-input v-model="editForm.type" placeholder="请输入字典类型" />
                 </el-form-item>
                 <el-form-item label="状态" prop="status">
-                    <el-radio-group v-model="form.status">
-                        <el-radio v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.value">{{
+                    <el-radio-group v-model="editForm.status">
+                        <el-radio v-for="dict in statusGroup" :key="dict.value" :label="dict.value">{{
                             dict.label
                         }}</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="备注" prop="remark">
-                    <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
+                    <el-input v-model="editForm.remark" type="textarea" placeholder="请输入内容"></el-input>
                 </el-form-item>
             </el-form>
             <template #footer>
@@ -174,37 +178,49 @@
 </template>
 
 <script setup name="Dict" lang="ts">
-import { parseTime } from '@/utils/ruoyi';
-import { getCurrentInstance, ComponentInternalInstance, ref, reactive, toRefs } from 'vue';
+import { dateFormat } from '@zeronejs/utils';
+import { ref } from 'vue';
 import { ElMessage, FormInstance } from 'element-plus';
+import { ElModalConfirm } from '@/plugins/ElModal';
+import { endOfDay } from 'date-fns';
+import { download } from '@/utils/request';
+// 接口
+import type { DictCreateDto, DictEntity, DictListWhereDto } from '@/api/interface';
 import { postDictCreate } from '@/api/controller/dict/postDictCreate';
-import { DictCreateDto, DictEntity, DictListWhereDto } from '@/api/interface';
 import { patchDictUpdateById } from '@/api/controller/dict/patchDictUpdateById';
 import { postDictList } from '@/api/controller/dict/postDictList';
 import { getDictDetailsById } from '@/api/controller/dict/getDictDetailsById';
 import { postDictRemoves } from '@/api/controller/dict/postDictRemoves';
-import { ElModalConfirm } from '@/plugins/ElModal';
-import { endOfDay } from 'date-fns';
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 enum DictEntityStatusEnum {
     Normal = 'Normal',
     Disable = 'Disable',
 }
-const { sys_normal_disable } = proxy!.useDict('sys_normal_disable');
+// 新建/编辑 表单ref
 const dictRef = ref<FormInstance>();
+// 搜索栏
 const queryRef = ref<FormInstance>();
 
 const dictList = ref<DictEntity[]>([]);
+// 新增/编辑 弹窗
 const open = ref(false);
+// 列表loading
 const loading = ref(true);
 const showSearch = ref(true);
 const ids = ref<number[]>([]);
+// 单选
 const single = ref(true);
+// 是否选中了数据
 const multiple = ref(true);
 const total = ref(0);
-const title = ref('');
+const dialogTitle = ref('');
+// 创建日期
 const dateRange = ref<Date[]>([]);
+
+const statusGroup = [
+    { label: 'Normal', value: 'Normal' },
+    { label: 'Disable', value: 'Disable' },
+];
 const initFormValue = {
     title: '',
     status: DictEntityStatusEnum.Normal,
@@ -212,27 +228,22 @@ const initFormValue = {
     type: '',
 };
 const fromId = ref(0);
-const form = ref<DictCreateDto>({ ...initFormValue });
+// 新增/编辑
+const editForm = ref<DictCreateDto>({ ...initFormValue });
 const queryLimit = ref({
     page: 1,
     psize: 10,
 });
-const data = reactive<{
-    queryParams: DictListWhereDto;
-    rules: any;
-}>({
-    queryParams: {
-        title: undefined,
-        type: undefined,
-        status: undefined,
-    },
-    rules: {
-        title: [{ required: true, message: '字典名称不能为空', trigger: 'blur' }],
-        type: [{ required: true, message: '字典类型不能为空', trigger: 'blur' }],
-    },
+// 列表请求参数
+const queryParams = ref<DictListWhereDto>({
+    title: undefined,
+    type: undefined,
+    status: undefined,
 });
-
-const { queryParams, rules } = toRefs(data);
+const rules = {
+    title: [{ required: true, message: '字典名称不能为空', trigger: 'blur' }],
+    type: [{ required: true, message: '字典类型不能为空', trigger: 'blur' }],
+};
 
 /** 查询字典类型列表 */
 const getList = async () => {
@@ -240,22 +251,16 @@ const getList = async () => {
     const { data } = await postDictList({
         where: {
             ...queryParams.value,
-            beginTime: dateRange.value[0]?.toISOString(),
-            endTime: dateRange.value[1] ? endOfDay(dateRange.value[1]).toISOString() : undefined,
+            createdAt:
+                dateRange.value.length === 0
+                    ? undefined
+                    : [dateRange.value[0]?.toISOString(), endOfDay(dateRange.value[1]).toISOString()],
         },
         limit: queryLimit.value,
     });
     dictList.value = data.data;
     total.value = data.total;
     loading.value = false;
-
-    console.log(dateRange.value);
-    console.log(queryParams.value);
-    // listType(proxy!.addDateRange(queryParams.value, dateRange.value)).then((response: any) => {
-    //     dictList.value = response.rows;
-    //     total.value = response.total;
-    //     loading.value = false;
-    // });
 };
 /** 取消按钮 */
 const cancel = () => {
@@ -265,7 +270,7 @@ const cancel = () => {
 /** 表单重置 */
 const reset = () => {
     fromId.value = 0;
-    form.value = { ...initFormValue };
+    editForm.value = { ...initFormValue };
     dictRef.value?.resetFields();
 };
 /** 搜索按钮操作 */
@@ -283,7 +288,7 @@ const resetQuery = () => {
 const handleAdd = () => {
     reset();
     open.value = true;
-    title.value = '添加字典类型';
+    dialogTitle.value = '添加字典类型';
 };
 /** 多选框选中数据 */
 const handleSelectionChange = (selection: DictEntity[]) => {
@@ -292,15 +297,15 @@ const handleSelectionChange = (selection: DictEntity[]) => {
     multiple.value = !selection.length;
 };
 /** 修改按钮操作 */
-const handleUpdate = async (row: DictEntity) => {
+const handleUpdate = async (row?: DictEntity) => {
     reset();
-    const dictId = row.id || ids.value[0];
+    const dictId = row ? row.id : ids.value[0];
 
     const { data } = await getDictDetailsById({ id: dictId });
     fromId.value = dictId;
-    form.value = data.data;
+    editForm.value = data.data;
     open.value = true;
-    title.value = '修改字典类型';
+    dialogTitle.value = '修改字典类型';
 };
 /** 提交按钮 */
 const submitForm = async () => {
@@ -309,18 +314,18 @@ const submitForm = async () => {
         return;
     }
     if (fromId.value) {
-        await patchDictUpdateById({ id: fromId.value }, form.value);
+        await patchDictUpdateById({ id: fromId.value }, editForm.value);
         ElMessage.success('修改成功');
     } else {
-        await postDictCreate(form.value);
+        await postDictCreate(editForm.value);
         ElMessage.success('新增成功');
     }
     open.value = false;
     getList();
 };
 /** 删除按钮操作 */
-const handleDelete = async (row: DictEntity) => {
-    const dictIds = [row.id] || ids.value;
+const handleDelete = async (row?: DictEntity) => {
+    const dictIds = row ? [row.id] : ids.value;
     try {
         await ElModalConfirm('是否确认删除字典编号为"' + dictIds + '"的数据项？');
     } catch (e) {
@@ -332,7 +337,7 @@ const handleDelete = async (row: DictEntity) => {
 };
 /** 导出按钮操作 */
 function handleExport() {
-    proxy!.download(
+    download(
         'system/dict/type/export',
         {
             ...queryParams.value,

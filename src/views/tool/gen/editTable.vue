@@ -249,6 +249,7 @@ const addColumns = () => {
         required: false,
         /** 表id */
         tableId: info.value?.id ?? 0,
+        htmlType: 'input',
     });
 };
 /** 提交按钮 */
