@@ -285,10 +285,7 @@ const resetQuery = () => {
     handleQuery();
 };
 // 新增/编辑弹窗通用逻辑
-const useDictDialog = <T extends DictCreateDto | DictUpdateDto>(
-    initFormValue: T,
-    submitHandle: () => Promise<void>
-) => {
+const useDictDialog = <T extends DictCreateDto | DictUpdateDto>(initFormValue: T) => {
     const dictRef = ref<FormInstance>();
     const dialogVisible = ref(false);
     const editForm = ref(cloneDeep(initFormValue));
@@ -303,23 +300,13 @@ const useDictDialog = <T extends DictCreateDto | DictUpdateDto>(
         editForm.value = cloneDeep(initFormValue);
         dictRef.value?.resetFields();
     };
-    const submitForm = async () => {
-        try {
-            await dictRef.value?.validate();
-        } catch (e) {
-            return console.log(e);
-        }
-        await submitHandle();
-        dialogVisible.value = false;
-        getList();
-    };
+
     return {
         dictRef,
         dialogVisible,
         editForm,
         cancel,
         reset,
-        submitForm,
     };
 };
 const fromId = ref(0);
@@ -336,14 +323,7 @@ const initUpadteFormValue: DictUpdateDto = {
     remark: '',
     type: '',
 };
-const addSubmitHandle = async () => {
-    await postDictCreate(addForm.value);
-    ElMessage.success('新增成功');
-};
-const updateSubmitHandle = async () => {
-    await patchDictUpdateById({ id: fromId.value }, updateForm.value);
-    ElMessage.success('修改成功');
-};
+
 /** 新增表单相关 */
 const {
     dictRef: addDictRef,
@@ -351,8 +331,7 @@ const {
     editForm: addForm,
     cancel: addCancel,
     reset: addReset,
-    submitForm: submitAddForm,
-} = useDictDialog(initAddFormValue, addSubmitHandle);
+} = useDictDialog(initAddFormValue);
 /** 编辑表单相关 */
 const {
     dictRef: updateDictRef,
@@ -360,9 +339,31 @@ const {
     editForm: updateForm,
     cancel: updateCancel,
     reset: updateReset,
-    submitForm: submitUpdateForm,
-} = useDictDialog(initUpadteFormValue, updateSubmitHandle);
-
+} = useDictDialog(initUpadteFormValue);
+/** 提交添加表单 */
+const submitAddForm = async () => {
+    try {
+        await addDictRef.value?.validate();
+    } catch (e) {
+        return console.log(e);
+    }
+    await postDictCreate(addForm.value);
+    ElMessage.success('新增成功');
+    addDialogVisible.value = false;
+    getList();
+};
+/** 提交修改表单 */
+const submitUpdateForm = async () => {
+    try {
+        await updateDictRef.value?.validate();
+    } catch (e) {
+        return console.log(e);
+    }
+    await patchDictUpdateById({ id: fromId.value }, updateForm.value);
+    ElMessage.success('修改成功');
+    updateDialogVisible.value = false;
+    getList();
+};
 /** 新增按钮操作 */
 const handleAdd = () => {
     addReset();
