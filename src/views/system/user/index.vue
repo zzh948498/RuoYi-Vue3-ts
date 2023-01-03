@@ -280,6 +280,7 @@
                                 value-key="id"
                                 placeholder="请选择归属部门"
                                 check-strictly
+                                :render-after-expand="false"
                             />
                         </el-form-item>
                     </el-col>
