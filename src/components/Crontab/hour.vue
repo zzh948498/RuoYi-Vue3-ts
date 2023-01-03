@@ -38,7 +38,8 @@
 </template>
 
 <!-- eslint-disable vue/no-side-effects-in-computed-properties -->
-<script setup lang="ts">import { computed, ref, watch } from 'vue';
+<script setup lang="ts">
+import { computed, ref, watch } from 'vue';
 
 const emit = defineEmits(['update']);
 const props = defineProps({
@@ -85,7 +86,7 @@ watch(
     value => changeRadioValue(value)
 );
 watch([radioValue, cycleTotal, averageTotal, checkboxString], () => onRadioChange());
-function changeRadioValue(value:string) {
+function changeRadioValue(value: string) {
     if (value === '*') {
         radioValue.value = 1;
     } else if (value.indexOf('-') > -1) {
@@ -127,7 +128,6 @@ function onRadioChange() {
 </script>
 
 <style lang="scss" scoped>
-.el-input-number--small,
 .el-input-number--small,
 .el-select,
 .el-select--small {

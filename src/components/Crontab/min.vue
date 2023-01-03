@@ -128,7 +128,6 @@ function onRadioChange() {
 
 <style lang="scss" scoped>
 .el-input-number--small,
-.el-input-number--small,
 .el-select,
 .el-select--small {
     margin: 0 0.2rem;
