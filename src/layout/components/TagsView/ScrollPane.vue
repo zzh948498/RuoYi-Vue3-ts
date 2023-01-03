@@ -23,7 +23,7 @@ import {
 const tagAndTagSpacing = ref(4);
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 
-const scrollWrapper = computed(() => (proxy!.$refs.scrollContainer as any).$refs.wrap$);
+const scrollWrapper = computed(() => (proxy!.$refs.scrollContainer as any).$refs.wrapRef);
 
 onMounted(() => {
     scrollWrapper.value.addEventListener('scroll', emitScroll, true);
