@@ -214,11 +214,13 @@ import { download } from '@/utils/request';
 import { cloneDeep } from 'lodash';
 // 接口
 import type { DictCreateDto, DictEntity, DictListWhereDto, DictUpdateDto } from '@/api/interface';
-import { postDictCreate } from '@/api/controller/dict/postDictCreate';
-import { patchDictUpdateById } from '@/api/controller/dict/patchDictUpdateById';
-import { postDictList } from '@/api/controller/dict/postDictList';
-import { getDictDetailsById } from '@/api/controller/dict/getDictDetailsById';
-import { postDictRemoves } from '@/api/controller/dict/postDictRemoves';
+import {
+    postDictCreate,
+    patchDictUpdateById,
+    postDictList,
+    getDictDetailsById,
+    postDictRemoves,
+} from '@/api/controller';
 
 // 搜索栏
 const queryRef = ref<FormInstance>();
