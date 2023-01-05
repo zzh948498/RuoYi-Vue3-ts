@@ -235,6 +235,7 @@ import { postGenTableRelationsCreate } from '@/api/controller/genTableRelations/
 import axios from 'axios';
 import type { Schema } from 'swagger-schema-official';
 import { postJsonDetails } from '@/api/controller';
+import { zeroneLocalStorage } from '@/utils/localStorage';
 const route = useRoute();
 type ColumnsListItem = PartialByKeys<GenColumnsEntity, 'id' | 'createdAt' | 'updatedAt' | 'table'>;
 
@@ -367,12 +368,16 @@ async function handleDelete(row: ColumnsListItem, index: number) {
 }
 const openImport = () => {
     importVisible.value = true;
+    const localImportForm = zeroneLocalStorage.getItem('importForm');
+    if (localImportForm) {
+        importForm.value = { ...localImportForm };
+    }
 };
 /** 提交按钮 */
 async function submitImportForm() {
     const valid = await importFormRef.value?.validate();
     if (!valid) return;
-    const {data} = await postJsonDetails({url:importForm.value.url})
+    const { data } = await postJsonDetails({ url: importForm.value.url });
 
     const schemas = data.data.json.components.schemas[importForm.value.schema] as Schema;
     if (!schemas) {
@@ -432,6 +437,7 @@ async function submitImportForm() {
             });
         }
     }
+    zeroneLocalStorage.setItem('importForm', { ...importForm.value });
     ElMessage.success('操作成功');
     importVisible.value = false;
 }
