@@ -1,3 +1,5 @@
+export * from "./apiTypes/AppReadJsonRes";
+export * from "./apiTypes/AppReadJsonWhereDto";
 export * from "./apiTypes/GenColumnsEntity";
 export * from "./apiTypes/GenTableRelationsEntity";
 export * from "./apiTypes/GenTableEntity";

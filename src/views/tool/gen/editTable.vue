@@ -1,95 +1,106 @@
 <template>
-    <el-card>
-        <el-tabs v-model="activeName">
-            <el-tab-pane label="基本信息" name="basic">
-                <basic-info-form ref="basicFormInstance" :info="info" />
-            </el-tab-pane>
-            <el-tab-pane label="字段信息" name="columnInfo">
-                <el-row :gutter="10" class="mb8">
-                    <el-col :span="1.5">
-                        <el-button
-                            v-hasPermi="['tool:gen:code']"
-                            type="primary"
-                            plain
-                            icon="Download"
-                            @click="addColumns"
-                            >添加字段</el-button
+    <div>
+        <el-card>
+            <el-tabs v-model="activeName">
+                <el-tab-pane label="基本信息" name="basic">
+                    <basic-info-form ref="basicFormInstance" :info="info" />
+                </el-tab-pane>
+                <el-tab-pane label="字段信息" name="columnInfo">
+                    <el-row :gutter="10" class="mb8">
+                        <el-col :span="1.5">
+                            <el-button
+                                v-hasPermi="['tool:gen:code']"
+                                type="primary"
+                                plain
+                                icon="Plus"
+                                @click="addColumns"
+                                >添加字段</el-button
+                            >
+                        </el-col>
+                        <el-col :span="1.5">
+                            <el-button
+                                v-hasPermi="['tool:gen:code']"
+                                type="primary"
+                                plain
+                                icon="Upload"
+                                @click="openImport"
+                                >导入字段</el-button
+                            >
+                        </el-col>
+                    </el-row>
+                    <el-form ref="columnsFormRef" :model="columnsForm" :rules="rules" label-width="0">
+                        <el-table
+                            ref="dragTable"
+                            :data="columnsForm.columns"
+                            row-key="id"
+                            :max-height="tableHeight"
                         >
-                    </el-col>
-                </el-row>
-                <el-form ref="columnsFormRef" :model="columnsForm" :rules="rules" label-width="0">
-                    <el-table
-                        ref="dragTable"
-                        :data="columnsForm.columns"
-                        row-key="id"
-                        :max-height="tableHeight"
-                    >
-                        <el-table-column label="序号" type="index" min-width="5%" />
-                        <el-table-column label="字段列名" min-width="10%">
-                            <template #default="scope">
-                                <el-form-item
-                                    :prop="'columns.' + scope.$index + '.name'"
-                                    :rules="rules.name"
-                                    class="pt-4"
-                                >
-                                    <el-input v-model="scope.row.name"></el-input>
-                                </el-form-item>
-                            </template>
-                        </el-table-column>
+                            <el-table-column label="序号" type="index" min-width="5%" />
+                            <el-table-column label="字段列名" min-width="10%">
+                                <template #default="scope">
+                                    <el-form-item
+                                        :prop="'columns.' + scope.$index + '.name'"
+                                        :rules="rules.name"
+                                        class="pt-4"
+                                    >
+                                        <el-input v-model="scope.row.name"></el-input>
+                                    </el-form-item>
+                                </template>
+                            </el-table-column>
 
-                        <el-table-column label="字段描述" min-width="10%">
-                            <template #default="scope">
-                                <el-input v-model="scope.row.desc"></el-input>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="ts类型" min-width="11%">
-                            <template #default="scope">
-                                <div>
-                                    <el-select v-model="scope.row.tsType">
-                                        <el-option label="string" value="string" />
-                                        <el-option label="number" value="number" />
-                                        <el-option label="boolean" value="boolean" />
-                                        <el-option label="Date" value="Date" />
+                            <el-table-column label="字段描述" min-width="10%">
+                                <template #default="scope">
+                                    <el-input v-model="scope.row.desc"></el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="ts类型" min-width="11%">
+                                <template #default="scope">
+                                    <div>
+                                        <el-select v-model="scope.row.tsType">
+                                            <el-option label="string" value="string" />
+                                            <el-option label="number" value="number" />
+                                            <el-option label="boolean" value="boolean" />
+                                            <el-option label="Date" value="Date" />
+                                        </el-select>
+                                    </div>
+                                    <el-select
+                                        v-show="scope.row.isEnum"
+                                        v-model="scope.row.enumValues"
+                                        multiple
+                                        filterable
+                                        allow-create
+                                        default-first-option
+                                        placeholder="填写你的类型"
+                                    >
                                     </el-select>
-                                </div>
-                                <el-select
-                                    v-show="scope.row.isEnum"
-                                    v-model="scope.row.enumValues"
-                                    multiple
-                                    filterable
-                                    allow-create
-                                    default-first-option
-                                    placeholder="填写你的类型"
-                                >
-                                </el-select>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="枚举类型" min-width="5%">
-                            <template #default="scope">
-                                <el-checkbox v-model="scope.row.isEnum"></el-checkbox>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="插入" min-width="5%">
-                            <template #default="scope">
-                                <el-checkbox v-model="scope.row.isInsert"></el-checkbox>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="编辑" min-width="5%">
-                            <template #default="scope">
-                                <el-checkbox v-model="scope.row.isEdit"></el-checkbox>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="列表" min-width="5%">
-                            <template #default="scope">
-                                <el-checkbox v-model="scope.row.isList"></el-checkbox>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="查询" min-width="5%">
-                            <template #default="scope">
-                                <el-checkbox v-model="scope.row.isQuery"></el-checkbox>
-                            </template>
-                        </el-table-column>
-                        <!-- <el-table-column label="查询方式" min-width="10%">
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="枚举类型" min-width="5%">
+                                <template #default="scope">
+                                    <el-checkbox v-model="scope.row.isEnum"></el-checkbox>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="插入" min-width="5%">
+                                <template #default="scope">
+                                    <el-checkbox v-model="scope.row.isInsert"></el-checkbox>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="编辑" min-width="5%">
+                                <template #default="scope">
+                                    <el-checkbox v-model="scope.row.isEdit"></el-checkbox>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="列表" min-width="5%">
+                                <template #default="scope">
+                                    <el-checkbox v-model="scope.row.isList"></el-checkbox>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="查询" min-width="5%">
+                                <template #default="scope">
+                                    <el-checkbox v-model="scope.row.isQuery"></el-checkbox>
+                                </template>
+                            </el-table-column>
+                            <!-- <el-table-column label="查询方式" min-width="10%">
                             <template #default="scope">
                                 <el-select v-model="scope.row.queryType">
                                     <el-option label="=" value="EQ" />
@@ -103,80 +114,103 @@
                                 </el-select>
                             </template>
                         </el-table-column> -->
-                        <el-table-column label="必填" min-width="5%">
-                            <template #default="scope">
-                                <el-checkbox v-model="scope.row.required"></el-checkbox>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="显示类型" min-width="12%">
-                            <template #default="scope">
-                                <el-select v-model="scope.row.htmlType">
-                                    <el-option label="文本框" value="input" />
-                                    <el-option label="文本域" value="textarea" />
-                                    <el-option label="下拉框" value="select" />
-                                    <el-option label="单选框" value="radio" />
-                                    <el-option label="复选框" value="checkbox" />
-                                    <el-option label="日期控件" value="datetime" />
-                                    <el-option label="图片上传" value="imageUpload" />
-                                    <el-option label="文件上传" value="fileUpload" />
-                                    <el-option label="富文本控件" value="editor" />
-                                </el-select>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="字典类型" min-width="12%">
-                            <template #default="scope">
-                                <el-select
-                                    v-model="scope.row.dictType"
-                                    clearable
-                                    filterable
-                                    placeholder="请选择"
-                                >
-                                    <el-option
-                                        v-for="dict in dictOptions"
-                                        :key="dict.dictType"
-                                        :label="dict.dictName"
-                                        :value="dict.dictType"
+                            <el-table-column label="必填" min-width="5%">
+                                <template #default="scope">
+                                    <el-checkbox v-model="scope.row.required"></el-checkbox>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="显示类型" min-width="12%">
+                                <template #default="scope">
+                                    <el-select v-model="scope.row.htmlType">
+                                        <el-option label="文本框" value="input" />
+                                        <el-option label="文本域" value="textarea" />
+                                        <el-option label="下拉框" value="select" />
+                                        <el-option label="单选框" value="radio" />
+                                        <el-option label="复选框" value="checkbox" />
+                                        <el-option label="日期控件" value="datetime" />
+                                        <el-option label="图片上传" value="imageUpload" />
+                                        <el-option label="文件上传" value="fileUpload" />
+                                        <el-option label="富文本控件" value="editor" />
+                                    </el-select>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="字典类型" min-width="12%">
+                                <template #default="scope">
+                                    <el-select
+                                        v-model="scope.row.dictType"
+                                        clearable
+                                        filterable
+                                        placeholder="请选择"
                                     >
-                                        <span style="float: left">{{ dict.dictName }}</span>
-                                        <span style="float: right; color: #8492a6; font-size: 13px">{{
-                                            dict.dictType
-                                        }}</span>
-                                    </el-option>
-                                </el-select>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                            label="操作"
-                            align="center"
-                            width="50"
-                            class-name="small-padding fixed-width"
-                        >
-                            <template #default="scope">
-                                <el-tooltip content="删除" placement="top">
-                                    <el-button
-                                        v-hasPermi="['tool:gen:remove']"
-                                        link
-                                        type="primary"
-                                        icon="Delete"
-                                        @click="handleDelete(scope.row, scope.$index)"
-                                    ></el-button>
-                                </el-tooltip>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </el-form>
-            </el-tab-pane>
-            <el-tab-pane label="关系信息" name="genInfo">
-                <gen-info-form ref="genFormInstance" :info="info" :tables="tables" @getAllList="getList" />
-            </el-tab-pane>
-        </el-tabs>
-        <el-form label-width="100px">
-            <div style="text-align: center; margin-left: -100px; margin-top: 10px">
-                <el-button type="primary" @click="submitForm()">提交</el-button>
-                <el-button @click="close()">返回</el-button>
-            </div>
-        </el-form>
-    </el-card>
+                                        <el-option
+                                            v-for="dict in dictOptions"
+                                            :key="dict.dictType"
+                                            :label="dict.dictName"
+                                            :value="dict.dictType"
+                                        >
+                                            <span style="float: left">{{ dict.dictName }}</span>
+                                            <span style="float: right; color: #8492a6; font-size: 13px">{{
+                                                dict.dictType
+                                            }}</span>
+                                        </el-option>
+                                    </el-select>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                label="操作"
+                                align="center"
+                                width="50"
+                                class-name="small-padding fixed-width"
+                            >
+                                <template #default="scope">
+                                    <el-tooltip content="删除" placement="top">
+                                        <el-button
+                                            v-hasPermi="['tool:gen:remove']"
+                                            link
+                                            type="primary"
+                                            icon="Delete"
+                                            @click="handleDelete(scope.row, scope.$index)"
+                                        ></el-button>
+                                    </el-tooltip>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-form>
+                </el-tab-pane>
+                <el-tab-pane label="关系信息" name="genInfo">
+                    <gen-info-form
+                        ref="genFormInstance"
+                        :info="info"
+                        :tables="tables"
+                        @getAllList="getList"
+                    />
+                </el-tab-pane>
+            </el-tabs>
+            <el-form label-width="100px">
+                <div style="text-align: center; margin-left: -100px; margin-top: 10px">
+                    <el-button type="primary" @click="submitForm()">提交</el-button>
+                    <el-button @click="close()">返回</el-button>
+                </div>
+            </el-form>
+        </el-card>
+        <!-- 添加或修改角色配置对话框 -->
+        <el-dialog v-model="importVisible" title="导入字段" width="70%" append-to-body>
+            <el-form ref="importFormRef" :model="importForm" :rules="importFormRules" label-width="170px">
+                <el-form-item label="swagger地址" prop="url">
+                    <el-input v-model="importForm.url" placeholder="请输入swagger地址" />
+                </el-form-item>
+                <el-form-item label="schema" prop="schema">
+                    <el-input v-model="importForm.schema" placeholder="请输入schema" />
+                </el-form-item>
+            </el-form>
+            <template #footer>
+                <div class="dialog-footer">
+                    <el-button type="primary" @click="submitImportForm">确 定</el-button>
+                    <el-button @click="importVisible = false">取 消</el-button>
+                </div>
+            </template>
+        </el-dialog>
+    </div>
 </template>
 
 <script setup name="GenEdit" lang="ts">
@@ -198,7 +232,9 @@ import { patchGenColumnsUpdateById } from '@/api/controller/genColumns/patchGenC
 import { postGenColumnsCreate } from '@/api/controller/genColumns/postGenColumnsCreate';
 import { patchGenTableRelationsUpdateById } from '@/api/controller/genTableRelations/patchGenTableRelationsUpdateById';
 import { postGenTableRelationsCreate } from '@/api/controller/genTableRelations/postGenTableRelationsCreate';
-
+import axios from 'axios';
+import type { Schema } from 'swagger-schema-official';
+import { postJsonDetails } from '@/api/controller';
 const route = useRoute();
 type ColumnsListItem = PartialByKeys<GenColumnsEntity, 'id' | 'createdAt' | 'updatedAt' | 'table'>;
 
@@ -212,7 +248,7 @@ const columnsForm = ref<{
 }>({
     columns: [],
 });
-
+const importVisible = ref(false);
 const dictOptions = ref<any[]>([]);
 const info = ref<GenTableEntity>();
 const basicFormInstance = ref<InstanceType<typeof basicInfoForm>>();
@@ -227,6 +263,16 @@ const rules = ref({
             trigger: 'change',
         },
     ],
+});
+const importFormRef = ref();
+
+const importForm = ref({
+    url: '',
+    schema: '',
+});
+const importFormRules = ref({
+    url: [{ required: true, message: '请输入swagger地址', trigger: 'blur' }],
+    schema: [{ required: true, message: '请输入schema', trigger: 'blur' }],
 });
 const submiting = ref(false);
 const addColumns = () => {
@@ -318,6 +364,76 @@ async function handleDelete(row: ColumnsListItem, index: number) {
     }
     ElMessage.success('删除成功');
     // const tableIds = row.tableId || ids.value;
+}
+const openImport = () => {
+    importVisible.value = true;
+};
+/** 提交按钮 */
+async function submitImportForm() {
+    const valid = await importFormRef.value?.validate();
+    if (!valid) return;
+    const {data} = await postJsonDetails({url:importForm.value.url})
+
+    const schemas = data.data.json.components.schemas[importForm.value.schema] as Schema;
+    if (!schemas) {
+        return ElMessage.error('未找到当前schemas');
+    }
+    if (!schemas.properties) {
+        return ElMessage.error('schemas没有properties');
+    }
+    for (const key in schemas.properties) {
+        if (Object.prototype.hasOwnProperty.call(schemas.properties, key)) {
+            const element = schemas.properties[key];
+            let tsType: GenColumnsEntity['tsType'] = 'string';
+            let isEnum = false;
+            let enumValues: string[] | undefined;
+            let htmlType: GenColumnsEntity['htmlType'] = 'input';
+            switch (element.type) {
+                case 'string':
+                    if (element.format === 'date-time') {
+                        tsType = 'Date';
+                        htmlType = 'datetime';
+                    } else if (element.enum && element.enum.length !== 0) {
+                        isEnum = true;
+                        enumValues = [...element.enum];
+                        htmlType = 'select';
+                    }
+                    break;
+                case 'number':
+                case 'integer':
+                    tsType = 'number';
+                    break;
+                case 'boolean':
+                    tsType = 'boolean';
+                    htmlType = 'radio';
+                    break;
+            }
+            columnsForm.value.columns.push({
+                name: key,
+                /** 字段描述 */
+                desc: element.description ?? '',
+                /** ts类型 */
+                tsType,
+                isEnum,
+                enumValues,
+                /** 插入 */
+                isInsert: true,
+                /** 编辑 */
+                isEdit: true,
+                /** 列表 */
+                isList: true,
+                /** 查询 */
+                isQuery: true,
+                /** 必填 */
+                required: false,
+                /** 表id */
+                tableId: info.value?.id ?? 0,
+                htmlType,
+            });
+        }
+    }
+    ElMessage.success('操作成功');
+    importVisible.value = false;
 }
 function close() {
     const obj: RouteLocationRaw = {

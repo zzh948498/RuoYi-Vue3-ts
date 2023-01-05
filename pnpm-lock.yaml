@@ -7,6 +7,7 @@ specifiers:
   '@types/lodash': ^4.14.185
   '@types/node': ^18.7.15
   '@types/nprogress': ^0.2.0
+  '@types/swagger-schema-official': ^2.0.22
   '@typescript-eslint/eslint-plugin': ^5.33.1
   '@typescript-eslint/parser': ^5.33.1
   '@vitejs/plugin-vue': 3.1.0
@@ -66,6 +67,7 @@ devDependencies:
   '@types/lodash': 4.14.185
   '@types/node': 18.7.15
   '@types/nprogress': 0.2.0
+  '@types/swagger-schema-official': 2.0.22
   '@typescript-eslint/eslint-plugin': 5.36.2_iurrlxgqcgk5svigzxakafpeuu
   '@typescript-eslint/parser': 5.36.2_yqf6kl63nyoq5megxukfnom5rm
   '@vitejs/plugin-vue': 3.1.0_vite@3.2.5+vue@3.2.38
@@ -305,6 +307,10 @@ packages:
     resolution: {integrity: sha512-l4cmyPEckf8moNYHdJ+4wkHvFxjyW6ulm9l4YGaOxeyBWPhBOT0gvni1InpFPdzx1dKf/2s62qGITwxNWnPQng==}
     dependencies:
       '@types/node': 18.7.15
+    dev: true
+
+  /@types/swagger-schema-official/2.0.22:
+    resolution: {integrity: sha512-7yQiX6MWSFSvc/1wW5smJMZTZ4fHOd+hqLr3qr/HONDxHEa2bnYAsOcGBOEqFIjd4yetwMOdEDdeW+udRAQnHA==}
     dev: true
 
   /@types/web-bluetooth/0.0.15:
