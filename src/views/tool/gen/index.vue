@@ -71,7 +71,10 @@
                     plain
                     icon="Edit"
                     :disabled="single"
-                    @click="handleEditTable"
+                    @click="
+                        genId = 0;
+                        handleEditTable();
+                    "
                     >修改</el-button
                 >
             </el-col>
@@ -153,7 +156,10 @@
                             link
                             type="primary"
                             icon="Download"
-                            @click="handleGenTable(scope.row)"
+                            @click="
+                                openGenDialog = true;
+                                genId = scope.row.id;
+                            "
                         ></el-button>
                     </el-tooltip>
                 </template>
@@ -189,6 +195,28 @@
                 <div class="dialog-footer">
                     <el-button type="primary" @click="submitForm">确 定</el-button>
                     <el-button @click="open = false">取 消</el-button>
+                </div>
+            </template>
+        </el-dialog>
+        <!-- 生成代码选项 -->
+        <el-dialog v-model="openGenDialog" title="生成代码" width="600px" append-to-body>
+            <el-form ref="tableAddRef" :model="genform" label-width="100px">
+                <el-form-item label="表单类型" prop="formType">
+                    <el-radio-group v-model="genform.formType">
+                        <el-radio label="dialog"> 弹窗</el-radio>
+                        <el-radio label="page"> 新页面</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="模板" prop="template">
+                    <el-radio-group v-model="genform.template">
+                        <el-radio v-for="it in tempList" :key="it" :label="it"> {{ it }}</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+            </el-form>
+            <template #footer>
+                <div class="dialog-footer">
+                    <el-button type="primary" @click="handleGenTable">确 定</el-button>
+                    <el-button @click="openGenDialog = false">取 消</el-button>
                 </div>
             </template>
         </el-dialog>
@@ -240,6 +268,7 @@ import { getCurrentInstance, ComponentInternalInstance, ref, reactive, toRefs, o
 import { useRoute } from 'vue-router';
 import importTable from './importTable.vue';
 import { saveAs } from 'file-saver';
+import { getGenCodeTemplates } from '@/api/controller';
 
 const route = useRoute();
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
@@ -327,20 +356,33 @@ function handleQuery() {
     queryParams.value.page = 1;
     getList();
 }
+const openGenDialog = ref(false);
+const genform = ref({
+    formType: 'dialog',
+    template: 'element-plus',
+});
+const genId = ref(0);
 /** 生成代码操作 */
-async function handleGenTable(row?: GenTableEntity) {
-    const ids = row?.id ? [row.id] : tableNames.value;
+async function handleGenTable() {
+    const ids = genId.value ? [genId.value] : tableNames.value;
     if (ids.length === 0) {
         return ElMessage.error('请选中一条数据');
     }
     const { data } = await postGenCode({
         ids: ids,
+        ...genform.value
     });
     const arraybuffer = new Int8Array(data.data);
     // 再输入到 Blob 生成文件
     const blob = new Blob([arraybuffer], { type: 'application/zip' });
     saveAs(blob, 'ruoyi.zip');
 }
+const tempList = ref<string[]>([]);
+const getTemps = async () => {
+    const { data } = await getGenCodeTemplates();
+    tempList.value = data.data;
+};
+getTemps();
 /** 同步数据库操作 */
 function handleSynchDb(row: any) {
     const name = row.name;
@@ -401,8 +443,8 @@ function handleSelectionChange(selection: any[]) {
     multiple.value = !selection.length;
 }
 /** 修改按钮操作 */
-function handleEditTable(row: GenTableEntity) {
-    const tableId = row.id || ids.value[0];
+function handleEditTable(row?: GenTableEntity) {
+    const tableId = row?.id || ids.value[0];
     router.push({ path: '/tool/gen-edit/index/' + tableId, query: { page: queryParams.value.page } });
 }
 /** 删除按钮操作 */

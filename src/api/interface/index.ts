@@ -13,6 +13,7 @@ export * from "./apiTypes/GenTableListWhereDto";
 export * from "./apiTypes/GenTableListDto";
 export * from "./apiTypes/GenTableUpdateDto";
 export * from "./apiTypes/BodyIdsDto";
+export * from "./apiTypes/GenTableGenCodeDto";
 export * from "./apiTypes/GenTableRelationsCreateDto";
 export * from "./apiTypes/GenTableRelationsListWhereDto";
 export * from "./apiTypes/GenTableRelationsListDto";

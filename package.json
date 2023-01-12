@@ -6,6 +6,7 @@
         "dev": "vite",
         "build:prod": "vite build",
         "build:stage": "vite build --mode staging",
+        "api": "zerone api -d -p ./src/api",
         "preview": "vite preview"
     },
     "dependencies": {
