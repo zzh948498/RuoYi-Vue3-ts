@@ -134,7 +134,7 @@
                                     </el-select>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="字典类型" min-width="12%">
+                            <!-- <el-table-column label="字典类型" min-width="12%">
                                 <template #default="scope">
                                     <el-select
                                         v-model="scope.row.dictType"
@@ -155,7 +155,7 @@
                                         </el-option>
                                     </el-select>
                                 </template>
-                            </el-table-column>
+                            </el-table-column> -->
                             <el-table-column
                                 label="操作"
                                 align="center"
@@ -280,7 +280,7 @@ const addColumns = () => {
     columnsForm.value.columns.push({
         name: 'string',
         /** 字段描述 */
-        desc: '',
+        desc: 'string',
         /** ts类型 */
         tsType: 'string',
         isEnum: false,
@@ -373,7 +373,7 @@ const openImport = () => {
         importForm.value = { ...localImportForm };
     }
 };
-/** 提交按钮 */
+/** 导入字段按钮 */
 async function submitImportForm() {
     const valid = await importFormRef.value?.validate();
     if (!valid) return;
@@ -416,7 +416,7 @@ async function submitImportForm() {
             columnsForm.value.columns.push({
                 name: key,
                 /** 字段描述 */
-                desc: element.description ?? '',
+                desc: element.description ?? 'string',
                 /** ts类型 */
                 tsType,
                 isEnum,
