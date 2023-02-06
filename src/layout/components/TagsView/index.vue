@@ -103,10 +103,7 @@ function isAffix(tag: any) {
 }
 function isFirstView() {
     try {
-        return (
-            selectedTag.value.fullPath === visitedViews.value[1].fullPath ||
-            selectedTag.value.fullPath === '/index'
-        );
+        return selectedTag.value.fullPath === '/index' || selectedTag.value.fullPath === visitedViews.value[1].fullPath;
     } catch (err) {
         return false;
     }
