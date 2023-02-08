@@ -455,7 +455,7 @@ function getDeptAllCheckedKeys() {
 }
 /** 重置新增的表单以及其他数据  */
 function reset() {
-    if (menuRef.value !== undefined) {
+    if (menuRef.value) {
         menuRef.value.setCheckedKeys([]);
     }
     menuExpand.value = false;
