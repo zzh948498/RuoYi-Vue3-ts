@@ -146,15 +146,14 @@ const tables = ref<any[]>([]);
 const columns = ref<any[]>([]);
 const dictOptions = ref<any[]>([]);
 const info = ref<any>({});
-const basicForm = ref<InstanceType<typeof basicInfoForm>>();
-const genForm = ref<InstanceType<typeof genInfoForm>>();
+const basicInfo = ref<InstanceType<typeof basicInfoForm>>();
+const genInfo = ref<InstanceType<typeof genInfoForm>>();
 
 /** 提交按钮 */
 function submitForm() {
     // const basicForm = proxy!.$refs.basicInfo.$refs.basicInfoForm;
     // const genForm = proxy!.$refs.genInfo.$refs.genInfoForm;
-
-    Promise.all([basicForm.value, genForm.value].map(getFormPromise)).then(res => {
+    Promise.all([basicInfo.value?.basicInfoForm, genInfo.value?.genInfoForm].map(getFormPromise)).then(res => {
         const validateResult = res.every(item => !!item);
         if (validateResult) {
             const genTable = Object.assign({}, info.value);

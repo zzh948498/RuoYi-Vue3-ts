@@ -230,12 +230,16 @@
 <!-- eslint-disable vue/no-mutating-props -->
 <script setup lang="ts">
 import { listMenu } from '@/api/system/menu';
+import { FormInstance } from 'element-plus';
 import { ref, getCurrentInstance, ComponentInternalInstance, watch } from 'vue';
 
 const subColumns = ref<any[]>([]);
-const menuOptions = ref([]);
+const menuOptions = ref<any[]>([]);
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
-
+const genInfoForm = ref<FormInstance>();
+defineExpose({
+    genInfoForm,
+});
 const props = defineProps({
     info: {
         type: Object as () => any,

@@ -32,12 +32,17 @@
 </template>
 
 <script setup lang="ts">
+import { FormInstance } from 'element-plus';
 import { ref } from 'vue';
 defineProps({
     info: {
         type: Object,
         default: null,
     },
+});
+const basicInfoForm = ref<FormInstance>();
+defineExpose({
+    basicInfoForm
 });
 
 // 表单校验
