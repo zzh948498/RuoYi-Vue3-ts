@@ -152,6 +152,7 @@
 /* eslint-disable camelcase */
 import { list, delLogininfor, cleanLogininfor, unlockLogininfor } from '@/api/monitor/logininfor';
 import { parseTime } from '@/utils/ruoyi';
+import { Sort } from 'element-plus';
 import { getCurrentInstance, ComponentInternalInstance, ref } from 'vue';
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
@@ -160,13 +161,13 @@ const { sys_common_status } = proxy!.useDict('sys_common_status');
 const logininforList = ref<any[]>([]);
 const loading = ref(true);
 const showSearch = ref(true);
-const ids = ref<any[]>([]);
+const ids = ref<number[]>([]);
 const single = ref(true);
 const multiple = ref(true);
 const selectName = ref<any>('');
 const total = ref(0);
-const dateRange = ref<any[]>([]);
-const defaultSort = ref({ prop: 'loginTime', order: 'descending' });
+const dateRange = ref<any>([]);
+const defaultSort = ref<Sort>({ prop: 'loginTime', order: 'descending' });
 
 // 查询参数
 const queryParams = ref({

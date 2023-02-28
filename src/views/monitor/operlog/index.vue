@@ -236,6 +236,7 @@
 /* eslint-disable camelcase */
 import { list, delOperlog, cleanOperlog } from '@/api/monitor/operlog';
 import { parseTime } from '@/utils/ruoyi';
+import { Sort } from 'element-plus';
 import { getCurrentInstance, ComponentInternalInstance, ref, reactive, toRefs } from 'vue';
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
@@ -245,13 +246,13 @@ const operlogList = ref<any[]>([]);
 const open = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
-const ids = ref<any[]>([]);
+const ids = ref<number[]>([]);
 const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
-const dateRange = ref<any[]>([]);
-const defaultSort = ref({ prop: 'operTime', order: 'descending' });
+const dateRange = ref<any>([]);
+const defaultSort = ref<Sort>({ prop: 'operTime', order: 'descending' });
 
 const data = reactive<{
     form: any;

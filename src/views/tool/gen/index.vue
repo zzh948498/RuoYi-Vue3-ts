@@ -201,12 +201,12 @@ const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const tableList = ref<any[]>([]);
 const loading = ref(true);
 const showSearch = ref(true);
-const ids = ref<any[]>([]);
+const ids = ref<number[]>([]);
 const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const tableNames = ref<any[]>([]);
-const dateRange = ref<any[]>([]);
+const dateRange = ref<any>([]);
 const uniqueId = ref('');
 
 const data = reactive<{
