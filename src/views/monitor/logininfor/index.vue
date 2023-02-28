@@ -123,7 +123,7 @@
                     <dict-tag :options="sys_common_status" :value="scope.row.status" />
                 </template>
             </el-table-column>
-            <el-table-column label="描述" align="center" prop="msg" />
+            <el-table-column label="描述" align="center" prop="msg" :show-overflow-tooltip="true" />
             <el-table-column
                 label="访问时间"
                 align="center"
