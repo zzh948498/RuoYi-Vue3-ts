@@ -44,6 +44,8 @@ import {
 import Pagination from '@/components/Pagination/index.vue';
 // 自定义表格工具组件
 import RightToolbar from '@/components/RightToolbar/index.vue';
+// 富文本组件
+import Editor from "@/components/Editor/index.vue"
 // 文件上传组件
 import FileUpload from '@/components/FileUpload/index.vue';
 // 图片上传组件
@@ -75,6 +77,7 @@ app.component('FileUpload', FileUpload);
 app.component('ImageUpload', ImageUpload);
 app.component('ImagePreview', ImagePreview);
 app.component('RightToolbar', RightToolbar);
+app.component('Editor', Editor)
 
 app.use(router);
 app.use(store);
