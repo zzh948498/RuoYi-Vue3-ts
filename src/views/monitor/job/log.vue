@@ -203,10 +203,10 @@ const jobLogList = ref<any[]>([]);
 const open = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
-const ids = ref<any[]>([]);
+const ids = ref<number[]>([]);
 const multiple = ref(true);
 const total = ref(0);
-const dateRange = ref<any[]>([]);
+const dateRange = ref<any>([]);
 const route = useRoute();
 
 const data = reactive<{

@@ -47,11 +47,12 @@
             <el-form-item label="操作时间" style="width: 308px">
                 <el-date-picker
                     v-model="dateRange"
-                    value-format="YYYY-MM-DD"
+                    value-format="YYYY-MM-DD HH:mm:ss"
                     type="daterange"
                     range-separator="-"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
                 ></el-date-picker>
             </el-form-item>
             <el-form-item>
@@ -103,23 +104,22 @@
             @selectionChange="handleSelectionChange"
             @sortChange="handleSortChange"
         >
-            <el-table-column type="selection" width="55" align="center" />
+            <el-table-column type="selection" width="50" align="center" />
             <el-table-column label="日志编号" align="center" prop="operId" />
-            <el-table-column label="系统模块" align="center" prop="title" />
+            <el-table-column label="系统模块" align="center" prop="title" :show-overflow-tooltip="true" />
             <el-table-column label="操作类型" align="center" prop="businessType">
                 <template #default="scope">
                     <dict-tag :options="sys_oper_type" :value="scope.row.businessType" />
                 </template>
             </el-table-column>
-            <el-table-column label="请求方式" align="center" prop="requestMethod" />
             <el-table-column
                 label="操作人员"
                 align="center"
+                width="110"
                 prop="operName"
                 :show-overflow-tooltip="true"
                 sortable="custom"
                 :sort-orders="['descending', 'ascending']"
-                width="100"
             />
             <el-table-column
                 label="主机"
@@ -143,6 +143,19 @@
             >
                 <template #default="scope">
                     <span>{{ parseTime(scope.row.operTime) }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column
+                label="消耗时间"
+                align="center"
+                prop="costTime"
+                width="110"
+                :show-overflow-tooltip="true"
+                sortable="custom"
+                :sort-orders="['descending', 'ascending']"
+            >
+                <template #default="scope">
+                    <span>{{ scope.row.costTime }}毫秒</span>
                 </template>
             </el-table-column>
             <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -192,13 +205,16 @@
                     <el-col :span="24">
                         <el-form-item label="返回参数：">{{ form.jsonResult }}</el-form-item>
                     </el-col>
-                    <el-col :span="12">
+                    <el-col :span="6">
                         <el-form-item label="操作状态：">
                             <div v-if="form.status === 0">正常</div>
                             <div v-else-if="form.status === 1">失败</div>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="12">
+                    <el-col :span="8">
+                        <el-form-item label="消耗时间：">{{ form.costTime }}毫秒</el-form-item>
+                    </el-col>
+                    <el-col :span="10">
                         <el-form-item label="操作时间：">{{ parseTime(form.operTime) }}</el-form-item>
                     </el-col>
                     <el-col :span="24">
@@ -221,6 +237,7 @@
 /* eslint-disable camelcase */
 import { list, delOperlog, cleanOperlog } from '@/api/monitor/operlog';
 import { parseTime } from '@/utils/ruoyi';
+import { Sort } from 'element-plus';
 import { getCurrentInstance, ComponentInternalInstance, ref, reactive, toRefs } from 'vue';
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
@@ -230,13 +247,13 @@ const operlogList = ref<any[]>([]);
 const open = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
-const ids = ref<any[]>([]);
+const ids = ref<number[]>([]);
 const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
-const dateRange = ref<any[]>([]);
-const defaultSort = ref({ prop: 'operTime', order: 'descending' });
+const dateRange = ref<any>([]);
+const defaultSort = ref<Sort>({ prop: 'operTime', order: 'descending' });
 
 const data = reactive<{
     form: any;

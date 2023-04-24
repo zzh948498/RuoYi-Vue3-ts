@@ -166,8 +166,8 @@ export function download(url: string, params: any, filename: string, config: any
             ...config,
         })
         .then(async (data: any) => {
-            const isLogin = await blobValidate(data);
-            if (isLogin) {
+            const isBlob = blobValidate(data);
+            if (isBlob) {
                 const blob = new Blob([data]);
                 saveAs(blob, filename);
             } else {

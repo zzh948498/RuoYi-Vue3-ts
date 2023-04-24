@@ -32,11 +32,12 @@
             <el-form-item label="登录时间" style="width: 308px">
                 <el-date-picker
                     v-model="dateRange"
-                    value-format="YYYY-MM-DD"
+                    value-format="YYYY-MM-DD HH:mm:ss"
                     type="daterange"
                     range-separator="-"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
                 ></el-date-picker>
             </el-form-item>
             <el-form-item>
@@ -123,7 +124,7 @@
                     <dict-tag :options="sys_common_status" :value="scope.row.status" />
                 </template>
             </el-table-column>
-            <el-table-column label="描述" align="center" prop="msg" />
+            <el-table-column label="描述" align="center" prop="msg" :show-overflow-tooltip="true" />
             <el-table-column
                 label="访问时间"
                 align="center"
@@ -152,6 +153,7 @@
 /* eslint-disable camelcase */
 import { list, delLogininfor, cleanLogininfor, unlockLogininfor } from '@/api/monitor/logininfor';
 import { parseTime } from '@/utils/ruoyi';
+import { Sort } from 'element-plus';
 import { getCurrentInstance, ComponentInternalInstance, ref } from 'vue';
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance;
@@ -160,13 +162,13 @@ const { sys_common_status } = proxy!.useDict('sys_common_status');
 const logininforList = ref<any[]>([]);
 const loading = ref(true);
 const showSearch = ref(true);
-const ids = ref<any[]>([]);
+const ids = ref<number[]>([]);
 const single = ref(true);
 const multiple = ref(true);
 const selectName = ref<any>('');
 const total = ref(0);
-const dateRange = ref<any[]>([]);
-const defaultSort = ref({ prop: 'loginTime', order: 'descending' });
+const dateRange = ref<any>([]);
+const defaultSort = ref<Sort>({ prop: 'loginTime', order: 'descending' });
 
 // 查询参数
 const queryParams = ref({

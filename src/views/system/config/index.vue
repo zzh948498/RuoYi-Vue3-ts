@@ -111,7 +111,7 @@
                 :show-overflow-tooltip="true"
             />
             <el-table-column label="参数键名" align="center" prop="configKey" :show-overflow-tooltip="true" />
-            <el-table-column label="参数键值" align="center" prop="configValue" />
+            <el-table-column label="参数键值" align="center" prop="configValue" :show-overflow-tooltip="true" />
             <el-table-column label="系统内置" align="center" prop="configType">
                 <template #default="scope">
                     <dict-tag :options="sys_yes_no" :value="scope.row.configType" />
@@ -199,12 +199,12 @@ const configList = ref<any[]>([]);
 const open = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
-const ids = ref<any[]>([]);
+const ids = ref<number[]>([]);
 const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
-const dateRange = ref<any[]>([]);
+const dateRange = ref<any>([]);
 
 const data = reactive<{
     form: any;

@@ -3,7 +3,7 @@
         <el-row>
             <el-col :span="12" class="card-box">
                 <el-card>
-                    <template #header><span>CPU</span></template>
+                    <template #header><Cpu style="width: 1em; height: 1em; vertical-align: middle;" /> <span style="vertical-align: middle;">CPU</span></template>
                     <div class="el-table el-table--enable-row-hover el-table--medium">
                         <table cellspacing="0" style="width: 100%">
                             <thead>
@@ -45,7 +45,7 @@
 
             <el-col :span="12" class="card-box">
                 <el-card>
-                    <template #header><span>内存</span></template>
+                    <template #header><Tickets style="width: 1em; height: 1em; vertical-align: middle;" /> <span style="vertical-align: middle;">内存</span></template>
                     <div class="el-table el-table--enable-row-hover el-table--medium">
                         <table cellspacing="0" style="width: 100%">
                             <thead>
@@ -112,7 +112,7 @@
 
             <el-col :span="24" class="card-box">
                 <el-card>
-                    <template #header><span>服务器信息</span></template>
+                    <template #header><Monitor style="width: 1em; height: 1em; vertical-align: middle;" /> <span style="vertical-align: middle;">服务器信息</span></template>
                     <div class="el-table el-table--enable-row-hover el-table--medium">
                         <table cellspacing="0" style="width: 100%">
                             <tbody>
@@ -146,7 +146,7 @@
 
             <el-col :span="24" class="card-box">
                 <el-card>
-                    <template #header><span>Java虚拟机信息</span></template>
+                    <template #header><CoffeeCup style="width: 1em; height: 1em; vertical-align: middle;" /> <span style="vertical-align: middle;">Java虚拟机信息</span></template>
                     <div class="el-table el-table--enable-row-hover el-table--medium">
                         <table cellspacing="0" style="width: 100%; table-layout: fixed">
                             <tbody>
@@ -202,7 +202,7 @@
 
             <el-col :span="24" class="card-box">
                 <el-card>
-                    <template #header><span>磁盘状态</span></template>
+                    <template #header><MessageBox style="width: 1em; height: 1em; vertical-align: middle;" /> <span style="vertical-align: middle;">磁盘状态</span></template>
                     <div class="el-table el-table--enable-row-hover el-table--medium">
                         <table cellspacing="0" style="width: 100%">
                             <thead>

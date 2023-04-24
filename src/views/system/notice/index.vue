@@ -161,12 +161,7 @@
                     </el-col>
                     <el-col :span="24">
                         <el-form-item label="内容">
-                            <el-input
-                                v-model="form.noticeContent"
-                                :rows="6"
-                                type="textarea"
-                                placeholder="请输入内容"
-                            />
+                            <editor v-model="form.noticeContent" :min-height="192"/>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -195,7 +190,7 @@ const noticeList = ref<any[]>([]);
 const open = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
-const ids = ref<any[]>([]);
+const ids = ref<number[]>([]);
 const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
