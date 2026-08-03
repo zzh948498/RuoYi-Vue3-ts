@@ -42,7 +42,7 @@
 
 <!-- eslint-disable vue/no-side-effects-in-computed-properties -->
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const emit = defineEmits(['update']);
 const props = defineProps({
@@ -64,15 +64,17 @@ const props = defineProps({
         default: () => {},
     },
 });
-const fullYear = ref(0);
-const maxFullYear = ref(0);
+// 必须同步初始化，否则首次渲染时 max(-1) < min(0)，element-plus 2.7.0+ 的
+// el-input-number 会在 verifyValue 中 throwError 导致渲染中断
+const fullYear = ref(Number(new Date().getFullYear()));
+const maxFullYear = ref(Number(new Date().getFullYear()) + 10);
 const radioValue = ref(1);
-const cycle01 = ref(0);
-const cycle02 = ref(0);
-const average01 = ref(0);
+const cycle01 = ref(fullYear.value);
+const cycle02 = ref(fullYear.value + 1);
+const average01 = ref(fullYear.value);
 const average02 = ref(1);
 const checkboxList = ref<number[]>([]);
-const checkCopy = ref<number[]>([]);
+const checkCopy = ref<number[]>([fullYear.value]);
 const cycleTotal = computed(() => {
     cycle01.value = props.check(cycle01.value, fullYear.value, maxFullYear.value - 1);
     cycle02.value = props.check(cycle02.value, cycle01.value + 1, maxFullYear.value);
@@ -135,14 +137,6 @@ function onRadioChange() {
             break;
     }
 }
-onMounted(() => {
-    fullYear.value = Number(new Date().getFullYear());
-    maxFullYear.value = fullYear.value + 10;
-    cycle01.value = fullYear.value;
-    cycle02.value = cycle01.value + 1;
-    average01.value = fullYear.value;
-    checkCopy.value = [fullYear.value];
-});
 </script>
 
 <style lang="scss" scoped>
